@@ -1,6 +1,6 @@
 import unittest
-from grid_generator import HitoriGenerator
-from solver import HitoriSolver
+from Source.grid_generator import HitoriGenerator
+from Source.solver import HitoriSolver
 
 class TestHitoriGenerator(unittest.TestCase):
 

@@ -1,13 +1,13 @@
 import random
 import logging
-from itertools import product
-from solver import HitoriSolver
+from Source.solver import HitoriSolver
 
 logging.basicConfig(
     filename="debug.log",
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
+
 
 class HitoriGenerator:
     MAX_ATTEMPTS = 1000
@@ -56,7 +56,7 @@ class HitoriGenerator:
         """
         logging.debug(f"generate_hitori_grid {width}, {height}, {is_extended}")
         if is_extended:
-            #max_value = int(max(width, height) * 1.5)
+            # max_value = int(max(width, height) * 1.5)
             max_value = max(width, height)
             logging.debug(f"max_value {max_value}")
         else:

@@ -1,10 +1,10 @@
+from Source.interactive_mode import InteractiveMode
+from Source.solve_mode import SolveMode
 import logging
 import curses
-from interactive_mode import InteractiveMode
-from solve_mode import SolveMode
 
 logging.basicConfig(
-    filename="debug.log",
+    filename="Source/debug.log",
     level=logging.DEBUG,
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
@@ -22,11 +22,11 @@ def print_menu(stdscr, menu, current_row):
             stdscr.addstr(idx, 0, item)
     stdscr.refresh()
 
+
 def handle_mode_selection(stdscr):
     """Функция для обработки выбора версии игры."""
     mode_menu = ["Hitori Classic", "Hitori Extended", "Выход"]
     current_row = 0
-    is_extended = False
 
     while True:
         print_menu(stdscr, mode_menu, current_row)
@@ -47,6 +47,7 @@ def handle_mode_selection(stdscr):
                 return None  # Выход из программы
 
     return is_extended
+
 
 def handle_main_menu(stdscr, is_extended):
     """Функция для обработки основного меню."""
@@ -70,6 +71,7 @@ def handle_main_menu(stdscr, is_extended):
                     continue  # Возвращаемся в меню
             elif current_row == 2:
                 return  # Возвращаемся в меню выбора версии
+
 
 def handle_interactive_mode(stdscr, is_extended):
     """Функция для обработки интерактивного режима."""
@@ -123,6 +125,7 @@ def handle_interactive_mode(stdscr, is_extended):
         if InteractiveMode.do_interactive_mode(stdscr, is_extended, size, size):
             return True
 
+
 def get_user_input(stdscr, row, prompt):
     """Функция для получения ввода пользователя."""
     stdscr.addstr(row, 0, prompt)
@@ -145,15 +148,17 @@ def get_user_input(stdscr, row, prompt):
 
     return user_input
 
-def main(stdscr):
+
+def main(std_scr):
     curses.curs_set(0)
 
     while True:
-        is_extended = handle_mode_selection(stdscr)
+        is_extended = handle_mode_selection(std_scr)
         if is_extended is None:
             break
 
-        handle_main_menu(stdscr, is_extended)
+        handle_main_menu(std_scr, is_extended)
+
 
 if __name__ == "__main__":
     curses.wrapper(main)
