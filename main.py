@@ -1,7 +1,10 @@
-from Source.interactive_mode import InteractiveMode
-from Source.Helpers.input_reader import InputReader
+from __future__ import annotations
+
 from Source.Modes.Modes.classic import Classic
 from Source.Modes.Modes.extended import Extended
+from Source.States.States.solve import Solve
+from Source.States.States.interactive import Interactive
+
 import logging
 import curses
 
@@ -12,7 +15,7 @@ logging.basicConfig(
 )
 
 
-def print_menu(screen, menu, current_row):
+def print_menu(screen, menu: list[str], current_row: int):
     """Функция для отображения меню."""
     screen.clear()
     for idx, item in enumerate(menu):
@@ -25,7 +28,7 @@ def print_menu(screen, menu, current_row):
     screen.refresh()
 
 
-def handle_mode_selection(screen):
+def handle_mode_selection(screen) -> None | Classic | Extended:
     """Функция для обработки выбора версии игры."""
     mode_menu = ["Hitori Classic", "Hitori Extended", "Выход"]
     current_row = 0
@@ -40,10 +43,10 @@ def handle_mode_selection(screen):
             current_row += 1
         elif key in (10, 13):  # Enter
             if current_row == 0:
-                mode = Classic
+                mode = Classic()
                 break
             elif current_row == 1:
-                mode = Extended
+                mode = Extended()
                 break
             elif current_row == 2:
                 return None  # Выход из программы
@@ -51,7 +54,7 @@ def handle_mode_selection(screen):
     return mode
 
 
-def handle_main_menu(screen, mode):
+def handle_main_menu(screen, mode: Classic | Extended):
     """Функция для обработки основного меню."""
     main_menu = ["Интерактивный режим", "Решить головоломку", "Назад"]
     current_row = 0
@@ -69,19 +72,20 @@ def handle_main_menu(screen, mode):
                 if handle_interactive_mode(screen, mode):
                     continue  # Возвращаемся в меню
             elif current_row == 1:
-                if InputReader.solve_mode(screen, mode):
+                # None, None - заглушки для width и height
+                if Solve.handle(screen, mode, None, None):
                     continue  # Возвращаемся в меню
             elif current_row == 2:
                 return  # Возвращаемся в меню выбора версии
 
 
-def handle_interactive_mode(screen, mode):
+def handle_interactive_mode(screen, mode: Classic | Extended) -> bool:
     """Функция для обработки интерактивного режима."""
     screen.clear()
     size_data = mode.read_grid_info(screen)
     if size_data:
         width, height = size_data
-        if InteractiveMode.do_interactive_mode(screen, mode, height, width):
+        if Interactive.handle(screen, mode, height, width):
             return True
     return False
 

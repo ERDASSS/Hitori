@@ -1,4 +1,8 @@
+from __future__ import annotations
+
 from Source.Helpers.solver import Solver
+from Source.Modes.Modes.classic import Classic
+from Source.Modes.Modes.extended import Extended
 import random
 import logging
 
@@ -13,7 +17,7 @@ class Generator:
     MAX_ATTEMPTS = 1000
 
     @staticmethod
-    def _generate_constrained_grid(width, height, max_value):
+    def _generate_constrained_grid(width: int, height: int, max_value: int) -> list[list[int]]:
         """
         Генерирует сетку с добавлением ограничений, чтобы уменьшить вероятность нерешаемости.
         """
@@ -32,7 +36,7 @@ class Generator:
         return grid
 
     @staticmethod
-    def is_solvable(grid, mode):
+    def is_solvable(grid: list[list[int]], mode: Classic | Extended) -> bool:
         # TODO: Хуйня какая-то. Уже же есть solver. Нахуя ещё тут такой метод
         """
         Проверяет, решаема ли данная сетка.
@@ -51,7 +55,7 @@ class Generator:
             return False
 
     @staticmethod
-    def generate_grid(width, height, mode):
+    def generate_grid(width: int, height: int, mode: Classic | Extended) -> list[list[int]]:
         """
         Генерирует решаемую сетку для Hitori.
         """

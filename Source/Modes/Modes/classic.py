@@ -34,15 +34,13 @@ class Classic(Mode):
         screen.addstr(0, 0, "Введите головоломку строка за строкой, разделяя числа пробелами:")
 
     @staticmethod
-    def validate_row(row):
+    def validate_row(row: list[int]):
         for num in row:
             if num > len(row):
                 # TODO: дурацкое правило
                 raise ValueError("Числа не должны превышать размер квадрата")
             if num <= 0:
                 raise ValueError("Числа должны быть больше 0")
-
-
 
     @staticmethod
     def get_neighbours() -> list:
