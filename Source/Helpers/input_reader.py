@@ -34,7 +34,7 @@ class InputReader:
         return row_input
 
     @staticmethod
-    def validate_row(grid, row, is_extended):
+    def _validate_row(grid, row, mode):
         """
         Проверяет корректность введенной строки.
         """
@@ -43,27 +43,10 @@ class InputReader:
 
         if grid and len(row) != len(grid[0]):
             raise ValueError("Все строки должны быть одной длины.")
-        for num in row:
-            if num > len(row) and not is_extended:
-                raise ValueError("Числа не должны превышать размер квадрата")
-            if not is_extended and num <= 0:
-                raise ValueError("Числа должны быть больше 0")
+
+        mode.validate_row(row)
 
         return row
-
-    @staticmethod
-    def validate_grid(grid, is_extended):
-        """
-        Проверяет корректность всей сетки.
-        """
-        if is_extended:
-            max_width = len(grid[0])
-            max_height = len(grid)
-            max_allowed = max(max_width, max_height)
-            for row in grid:
-                for num in row:
-                    if num > max_allowed:
-                        raise ValueError(f"Число {num} превышает финальное допустимое значение {max_allowed}.")
 
     @staticmethod
     def get_user_input(screen, row, prompt):
@@ -89,10 +72,9 @@ class InputReader:
         return user_input
 
     @staticmethod
-    def solve_mode(screen, is_extended):
-        # TODO: Че этот метод делает
-        Display.display_instructions(screen, is_extended)
-
+    def solve_mode(screen, mode):
+        Display.display_instructions(screen, mode)
+        is_extended = mode.NAME == "Extended"
         grid = []
         while True:
             row_input = InputReader.get_row_input(screen, len(grid))
@@ -100,7 +82,7 @@ class InputReader:
                 break
 
             try:
-                row = InputReader.validate_row(grid, row_input, is_extended)
+                row = InputReader._validate_row(grid, row_input, mode)
                 grid.append(row)
             except ValueError as e:
                 screen.addstr(len(grid) + 2, 0, f"Ошибка ввода: {str(e)}")
@@ -112,8 +94,8 @@ class InputReader:
                 break
 
         try:
-            InputReader.validate_grid(grid, is_extended)
-            solutions = Solver.solve(grid, is_extended)
+            mode.validate_grid(grid)
+            solutions = Solver.solve(grid, mode)
         except Exception as e:
             screen.addstr(len(grid) + 3, 0, f"Ошибка решения: {str(e)}")
             screen.refresh()

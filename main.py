@@ -1,5 +1,7 @@
 from Source.interactive_mode import InteractiveMode
 from Source.Helpers.input_reader import InputReader
+from Source.Modes.Modes.classic import Classic
+from Source.Modes.Modes.extended import Extended
 import logging
 import curses
 
@@ -38,18 +40,18 @@ def handle_mode_selection(screen):
             current_row += 1
         elif key in (10, 13):  # Enter
             if current_row == 0:
-                is_extended = False
+                mode = Classic
                 break
             elif current_row == 1:
-                is_extended = True
+                mode = Extended
                 break
             elif current_row == 2:
                 return None  # Выход из программы
 
-    return is_extended
+    return mode
 
 
-def handle_main_menu(screen, is_extended):
+def handle_main_menu(screen, mode):
     """Функция для обработки основного меню."""
     main_menu = ["Интерактивный режим", "Решить головоломку", "Назад"]
     current_row = 0
@@ -64,101 +66,35 @@ def handle_main_menu(screen, is_extended):
             current_row += 1
         elif key in (10, 13):  # Enter
             if current_row == 0:
-                if handle_interactive_mode(screen, is_extended):
+                if handle_interactive_mode(screen, mode):
                     continue  # Возвращаемся в меню
             elif current_row == 1:
-                if InputReader.solve_mode(screen, is_extended):
+                if InputReader.solve_mode(screen, mode):
                     continue  # Возвращаемся в меню
             elif current_row == 2:
                 return  # Возвращаемся в меню выбора версии
 
 
-def handle_interactive_mode(screen, is_extended):
+def handle_interactive_mode(screen, mode):
     """Функция для обработки интерактивного режима."""
     screen.clear()
-    if is_extended:
-        screen.addstr(0, 0, "Введите ширину поля: ")
-        screen.refresh()
-
-        width_input = get_user_input(screen, 0, "Введите ширину поля: ")
-        if width_input is None:
-            return False
-
-        screen.addstr(1, 0, "Введите высоту поля: ")
-        screen.refresh()
-
-        height_input = get_user_input(screen, 1, "Введите высоту поля: ")
-        if height_input is None:
-            return False
-
-        try:
-            width = int(width_input)
-            height = int(height_input)
-            if width < 3 or height < 3 or width * height > 25 or height >= 10 or width >= 10:
-                raise ValueError("Ширина и высота должны быть > 2 и < 10 и площадь не должна превышать 25")
-        except ValueError as e:
-            screen.addstr(2, 0, f"Ошибка: {str(e)}")
-            screen.refresh()
-            screen.getch()
-            return False
-
-        if InteractiveMode.do_interactive_mode(screen, is_extended, height, width):
+    size_data = mode.read_grid_info(screen)
+    if size_data:
+        width, height = size_data
+        if InteractiveMode.do_interactive_mode(screen, mode, height, width):
             return True
-    else:
-        # TODO: A че больше нельзя?
-        screen.addstr(0, 0, "Введите размер поля [3;5]: ")
-        screen.refresh()
-
-        size_input = get_user_input(screen, 0, "Введите размер поля [3;5]: ")
-        if size_input is None:
-            return False
-
-        try:
-            size = int(size_input)
-            if size < 3 or size > 5:
-                raise ValueError("Размер поля должен быть в пределах [3;5]")
-        except ValueError as e:
-            screen.addstr(1, 0, f"Ошибка: {str(e)}")
-            screen.refresh()
-            screen.getch()
-            return False
-
-        if InteractiveMode.do_interactive_mode(screen, is_extended, size, size):
-            return True
-
-
-def get_user_input(screen, row, prompt):
-    """Функция для получения ввода пользователя."""
-    screen.addstr(row, 0, prompt)
-    screen.refresh()
-
-    user_input = ""
-    while True:
-        key = screen.getch()
-        if key in (10, 13):  # Enter
-            break
-        elif key in (8, 127, curses.KEY_BACKSPACE):  # Backspace
-            if user_input:
-                user_input = user_input[:-1]
-                screen.addstr(row, len(prompt) + len(user_input), " ")
-                screen.refresh()
-        elif 48 <= key <= 57:  # Цифры
-            user_input += chr(key)
-            screen.addstr(row, len(prompt), user_input)
-            screen.refresh()
-
-    return user_input
+    return False
 
 
 def main(screen):
     curses.curs_set(0)
 
     while True:
-        is_extended = handle_mode_selection(screen)
-        if is_extended is None:
+        mode = handle_mode_selection(screen)
+        if mode is None:
             break
 
-        handle_main_menu(screen, is_extended)
+        handle_main_menu(screen, mode)
 
 
 if __name__ == "__main__":

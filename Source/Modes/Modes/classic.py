@@ -6,6 +6,7 @@ from Source.Helpers.input_reader import InputReader
 
 class Classic(Mode):
     NAME = "Classic"
+
     @staticmethod
     def read_grid_info(screen) -> None | tuple[int, int]:
         # TODO: A че больше нельзя?
@@ -27,9 +28,22 @@ class Classic(Mode):
             return None
 
         return size, size
-        # if InteractiveMode.do_interactive_mode(screen, is_extended, size, size):
-        #     return True
 
     @staticmethod
     def display_input_info(screen):
         screen.addstr(0, 0, "Введите головоломку строка за строкой, разделяя числа пробелами:")
+
+    @staticmethod
+    def validate_row(row):
+        for num in row:
+            if num > len(row):
+                # TODO: дурацкое правило
+                raise ValueError("Числа не должны превышать размер квадрата")
+            if num <= 0:
+                raise ValueError("Числа должны быть больше 0")
+
+
+
+    @staticmethod
+    def get_neighbours() -> list:
+        return [(-1, 0), (1, 0), (0, -1), (0, 1)]
