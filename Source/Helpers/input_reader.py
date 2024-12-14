@@ -1,11 +1,10 @@
+from Source.Helpers.solver import Solver
+from Source.display import Display
 import curses
 import logging
-from Source.solver import HitoriSolver
-from Source.display import Display
 
 
-class SolveMode:
-
+class InputReader:
     @staticmethod
     def get_row_input(screen, row_number):
         """
@@ -67,17 +66,41 @@ class SolveMode:
                         raise ValueError(f"Число {num} превышает финальное допустимое значение {max_allowed}.")
 
     @staticmethod
+    def get_user_input(screen, row, prompt):
+        """Функция для получения ввода пользователя."""
+        screen.addstr(row, 0, prompt)
+        screen.refresh()
+
+        user_input = ""
+        while True:
+            key = screen.getch()
+            if key in (10, 13):  # Enter
+                break
+            elif key in (8, 127, curses.KEY_BACKSPACE):  # Backspace
+                if user_input:
+                    user_input = user_input[:-1]
+                    screen.addstr(row, len(prompt) + len(user_input), " ")
+                    screen.refresh()
+            elif 48 <= key <= 57:  # Цифры
+                user_input += chr(key)
+                screen.addstr(row, len(prompt), user_input)
+                screen.refresh()
+
+        return user_input
+
+    @staticmethod
     def solve_mode(screen, is_extended):
+        # TODO: Че этот метод делает
         Display.display_instructions(screen, is_extended)
 
         grid = []
         while True:
-            row_input = SolveMode.get_row_input(screen, len(grid))
+            row_input = InputReader.get_row_input(screen, len(grid))
             if is_extended and row_input == "":
                 break
 
             try:
-                row = SolveMode.validate_row(grid, row_input, is_extended)
+                row = InputReader.validate_row(grid, row_input, is_extended)
                 grid.append(row)
             except ValueError as e:
                 screen.addstr(len(grid) + 2, 0, f"Ошибка ввода: {str(e)}")
@@ -89,8 +112,8 @@ class SolveMode:
                 break
 
         try:
-            SolveMode.validate_grid(grid, is_extended)
-            solutions = HitoriSolver.solve(grid, is_extended)
+            InputReader.validate_grid(grid, is_extended)
+            solutions = Solver.solve(grid, is_extended)
         except Exception as e:
             screen.addstr(len(grid) + 3, 0, f"Ошибка решения: {str(e)}")
             screen.refresh()

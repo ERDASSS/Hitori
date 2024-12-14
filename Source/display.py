@@ -71,14 +71,14 @@ class Display:
                 solution_index = min(len(solutions) - 1, solution_index + 1)
 
     @staticmethod
-    def display_instructions(stdscr, is_extended):
+    def display_instructions(screen, is_extended):
         """
         Отображает инструкции для ввода головоломки.
         """
-        stdscr.clear()
+        screen.clear()
         if is_extended:
-            stdscr.addstr(0, 0, "Введите головоломку строка за строкой, разделяя числа пробелами."
+            screen.addstr(0, 0, "Введите головоломку строка за строкой, разделяя числа пробелами."
                                 " Для завершения введите пустую строку:")
         else:
-            stdscr.addstr(0, 0, "Введите головоломку строка за строкой, разделяя числа пробелами:")
-        stdscr.refresh()
+            screen.addstr(0, 0, "Введите головоломку строка за строкой, разделяя числа пробелами:")
+        screen.refresh()

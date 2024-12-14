@@ -1,6 +1,6 @@
+from Source.Helpers.solver import Solver
 import random
 import logging
-from Source.solver import HitoriSolver
 
 logging.basicConfig(
     filename="debug.log",
@@ -9,11 +9,11 @@ logging.basicConfig(
 )
 
 
-class HitoriGenerator:
+class Generator:
     MAX_ATTEMPTS = 1000
 
     @staticmethod
-    def generate_constrained_grid(width, height, max_value):
+    def _generate_constrained_grid(width, height, max_value):
         """
         Генерирует сетку с добавлением ограничений, чтобы уменьшить вероятность нерешаемости.
         """
@@ -33,15 +33,16 @@ class HitoriGenerator:
 
     @staticmethod
     def is_solvable(grid, is_extended):
+        # TODO: Хуйня какая-то. Уже же есть solver. Нахуя ещё тут такой метод
         """
         Проверяет, решаема ли данная сетка.
         """
         try:
-            solutions = HitoriSolver.solve(grid, is_extended)
+            solutions = Solver.solve(grid, is_extended)
 
-            if (len(solutions) == 1):
+            if len(solutions) == 1:
                 x_count = sum(row.count("X") for row in solutions[0])
-                if (x_count == 0):
+                if x_count == 0:
                     return False
 
             return len(solutions) > 0
@@ -50,24 +51,21 @@ class HitoriGenerator:
             return False
 
     @staticmethod
-    def generate_hitori_grid(width, height, is_extended):
+    def generate_grid(width, height, is_extended):
         """
         Генерирует решаемую сетку для Hitori.
         """
         logging.debug(f"generate_hitori_grid {width}, {height}, {is_extended}")
-        if is_extended:
-            # max_value = int(max(width, height) * 1.5)
-            max_value = max(width, height)
-            logging.debug(f"max_value {max_value}")
-        else:
-            max_value = width
+        # TODO: RECHECK
+        max_value = max(width, height)
+        logging.debug(f"max_value {max_value}")
 
         attempts = 0
-        while attempts < HitoriGenerator.MAX_ATTEMPTS:
-            grid = HitoriGenerator.generate_constrained_grid(width, height, max_value)
+        while attempts < Generator.MAX_ATTEMPTS:
+            grid = Generator._generate_constrained_grid(width, height, max_value)
             logging.debug(f"Attempt {attempts + 1}: {grid}")
 
-            if HitoriGenerator.is_solvable(grid, is_extended):
+            if Generator.is_solvable(grid, is_extended):
                 print(f"Сгенерирована решаемая сетка за {attempts + 1} попыток.")
                 return grid
 
