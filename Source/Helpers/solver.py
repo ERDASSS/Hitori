@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from Source.Modes.Modes.classic import Classic
+from Source.Modes.Modes.extended import Extended
 from itertools import product
 import logging
 
@@ -10,7 +14,7 @@ logging.basicConfig(
 
 class Solver:
     @staticmethod
-    def is_valid(grid, mode):
+    def is_valid(grid: list[list[int | str]], mode: Classic | Extended) -> bool:
         """
         Проверяет, является ли текущая сетка допустимой по правилам Hitori.
         """
@@ -40,7 +44,7 @@ class Solver:
         return Solver.check_neighbours(grid, mode)
 
     @staticmethod
-    def check_neighbours(grid, mode):
+    def check_neighbours(grid: list[list[int | str]], mode: Classic | Extended) -> bool:
         """
         Проверяет, что никакие две закрашенные клетки не являются соседними.
         """
@@ -59,7 +63,7 @@ class Solver:
         return True
 
     @staticmethod
-    def is_connected(grid):
+    def is_connected(grid: list[list[int | str]]) -> bool:
         """
         Проверяет, связаны ли все не закрашенные клетки в единую область.
         """
@@ -97,16 +101,16 @@ class Solver:
         total_unshaded = sum(1 for i, j in product(range(height), range(width)) if grid[i][j] != "X")
         return count == total_unshaded
 
-    # CLEAN
     @staticmethod
-    def solve(grid, mode):
+    def solve(grid: list[list[int | str]], mode: Classic | Extended) -> list[list[list[int]]]:
         """
         Решает головоломку Hitori. Возвращает список состояний сетки.
         """
         width = len(grid[0])
         height = len(grid)
 
-        def backtrack(grid, candidates):
+        # TODO: я не ебу какой тут тип правильный
+        def backtrack(grid: list[list[int | str]], candidates: list[tuple[int, int]]) -> list[list[list[int]]]:
             if not candidates:
                 # Проверяем, является ли решение допустимым
                 if Solver.is_valid(grid, mode) and Solver.is_connected(grid):

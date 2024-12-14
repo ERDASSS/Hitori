@@ -1,13 +1,13 @@
 from Source.Helpers.generator import Generator
 from Source.display import Display
 from Source.Helpers.solver import Solver
+from Source.States.state import State
 import curses
 
 
-class InteractiveMode:
+class Interactive(State):
     @staticmethod
-    # TODO: Ебал в рот такое название метода
-    def do_interactive_mode(screen, mode, height, width):
+    def handle(screen, mode, height, width):
         try:
             # TODO: RECHECK
             grid = Generator.generate_grid(height, width, mode)
