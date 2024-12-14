@@ -1,4 +1,4 @@
-from Source.solver import HitoriSolver
+from Source.Helpers.solver import Solver
 
 grid = [
     [3, 3, 2, 4, 5],
@@ -35,5 +35,5 @@ grid_solved_1 = [
     [3, 1, 2]
 ]
 
-solution = HitoriSolver.solve(grid_extended, True)
+solution = Solver.solve(grid_extended, True)
 print(solution)

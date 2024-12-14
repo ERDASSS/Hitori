@@ -8,7 +8,7 @@ logging.basicConfig(
 )
 
 
-class HitoriSolver:
+class Solver:
     @staticmethod
     def is_valid(grid, is_extended):
         """
@@ -37,7 +37,7 @@ class HitoriSolver:
                         return False
                     col_values[grid[i][j]] = True
 
-        return HitoriSolver.check_neighbours(grid, is_extended)
+        return Solver.check_neighbours(grid, is_extended)
 
     @staticmethod
     def check_neighbours(grid, is_extended):
@@ -110,7 +110,7 @@ class HitoriSolver:
         def backtrack(grid, candidates):
             if not candidates:
                 # Проверяем, является ли решение допустимым
-                if HitoriSolver.is_valid(grid, is_extended) and HitoriSolver.is_connected(grid):
+                if Solver.is_valid(grid, is_extended) and Solver.is_connected(grid):
                     return [[row[:] for row in grid]]
                 return []
 
@@ -122,7 +122,7 @@ class HitoriSolver:
 
             # Пробуем закрасить клетку
             grid[row][col] = "X"
-            if HitoriSolver.check_neighbours(grid, is_extended) and HitoriSolver.is_connected(grid):
+            if Solver.check_neighbours(grid, is_extended) and Solver.is_connected(grid):
                 solutions.extend(backtrack([row[:] for row in grid], candidates[:]))
 
             # Отменяем изменения
