@@ -11,3 +11,15 @@ class Mode:
     @staticmethod
     def display_input_info(screen):
         ...
+
+    @staticmethod
+    def validate_row(row):
+        ...
+
+    @staticmethod
+    def validate_grid(grid):
+        ...
+
+    @staticmethod
+    def get_neighbours() -> list:
+        ...

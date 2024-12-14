@@ -71,14 +71,10 @@ class Display:
                 solution_index = min(len(solutions) - 1, solution_index + 1)
 
     @staticmethod
-    def display_instructions(screen, is_extended):
+    def display_instructions(screen, mode):
         """
         Отображает инструкции для ввода головоломки.
         """
         screen.clear()
-        if is_extended:
-            screen.addstr(0, 0, "Введите головоломку строка за строкой, разделяя числа пробелами."
-                                " Для завершения введите пустую строку:")
-        else:
-            screen.addstr(0, 0, "Введите головоломку строка за строкой, разделяя числа пробелами:")
+        mode.display_input_info(screen)
         screen.refresh()

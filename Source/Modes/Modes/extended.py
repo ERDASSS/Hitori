@@ -42,3 +42,17 @@ class Extended(Mode):
     def display_input_info(screen):
         screen.addstr(0, 0, "Введите головоломку строка за строкой, разделяя числа пробелами."
                             " Для завершения введите пустую строку:")
+
+    @staticmethod
+    def validate_grid(grid):
+        max_width = len(grid[0])
+        max_height = len(grid)
+        max_allowed = max(max_width, max_height)
+        for row in grid:
+            for num in row:
+                if num > max_allowed:
+                    raise ValueError(f"Число {num} превышает финальное допустимое значение {max_allowed}.")
+
+    @staticmethod
+    def get_neighbours() -> list:
+        return [(-1, 0), (1, 0), (0, -1), (0, 1), (-1, -1), (1, 1), (-1, 1), (1, -1)]

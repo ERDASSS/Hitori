@@ -32,13 +32,13 @@ class Generator:
         return grid
 
     @staticmethod
-    def is_solvable(grid, is_extended):
+    def is_solvable(grid, mode):
         # TODO: Хуйня какая-то. Уже же есть solver. Нахуя ещё тут такой метод
         """
         Проверяет, решаема ли данная сетка.
         """
         try:
-            solutions = Solver.solve(grid, is_extended)
+            solutions = Solver.solve(grid, mode)
 
             if len(solutions) == 1:
                 x_count = sum(row.count("X") for row in solutions[0])
@@ -51,11 +51,11 @@ class Generator:
             return False
 
     @staticmethod
-    def generate_grid(width, height, is_extended):
+    def generate_grid(width, height, mode):
         """
         Генерирует решаемую сетку для Hitori.
         """
-        logging.debug(f"generate_hitori_grid {width}, {height}, {is_extended}")
+        logging.debug(f"generate_hitori_grid {width}, {height}, {mode.NAME}")
         # TODO: RECHECK
         max_value = max(width, height)
         logging.debug(f"max_value {max_value}")
@@ -65,7 +65,7 @@ class Generator:
             grid = Generator._generate_constrained_grid(width, height, max_value)
             logging.debug(f"Attempt {attempts + 1}: {grid}")
 
-            if Generator.is_solvable(grid, is_extended):
+            if Generator.is_solvable(grid, mode):
                 print(f"Сгенерирована решаемая сетка за {attempts + 1} попыток.")
                 return grid
 

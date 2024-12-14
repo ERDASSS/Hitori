@@ -10,7 +10,7 @@ logging.basicConfig(
 
 class Solver:
     @staticmethod
-    def is_valid(grid, is_extended):
+    def is_valid(grid, mode):
         """
         Проверяет, является ли текущая сетка допустимой по правилам Hitori.
         """
@@ -37,10 +37,10 @@ class Solver:
                         return False
                     col_values[grid[i][j]] = True
 
-        return Solver.check_neighbours(grid, is_extended)
+        return Solver.check_neighbours(grid, mode)
 
     @staticmethod
-    def check_neighbours(grid, is_extended):
+    def check_neighbours(grid, mode):
         """
         Проверяет, что никакие две закрашенные клетки не являются соседними.
         """
@@ -48,9 +48,7 @@ class Solver:
         width = len(grid[0])
         height = len(grid)
 
-        neighbours = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-        if is_extended:
-            neighbours.extend([(-1, -1), (1, 1), (-1, 1), (1, -1)])
+        neighbours = mode.get_neighbours()
 
         for i, j in product(range(height), range(width)):
             if grid[i][j] == "X":
@@ -99,8 +97,9 @@ class Solver:
         total_unshaded = sum(1 for i, j in product(range(height), range(width)) if grid[i][j] != "X")
         return count == total_unshaded
 
+    # CLEAN
     @staticmethod
-    def solve(grid, is_extended):
+    def solve(grid, mode):
         """
         Решает головоломку Hitori. Возвращает список состояний сетки.
         """
@@ -110,7 +109,7 @@ class Solver:
         def backtrack(grid, candidates):
             if not candidates:
                 # Проверяем, является ли решение допустимым
-                if Solver.is_valid(grid, is_extended) and Solver.is_connected(grid):
+                if Solver.is_valid(grid, mode) and Solver.is_connected(grid):
                     return [[row[:] for row in grid]]
                 return []
 
@@ -122,7 +121,7 @@ class Solver:
 
             # Пробуем закрасить клетку
             grid[row][col] = "X"
-            if Solver.check_neighbours(grid, is_extended) and Solver.is_connected(grid):
+            if Solver.check_neighbours(grid, mode) and Solver.is_connected(grid):
                 solutions.extend(backtrack([row[:] for row in grid], candidates[:]))
 
             # Отменяем изменения

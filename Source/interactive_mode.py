@@ -7,10 +7,10 @@ import curses
 class InteractiveMode:
     @staticmethod
     # TODO: Ебал в рот такое название метода
-    def do_interactive_mode(screen, is_extended, height, width):
+    def do_interactive_mode(screen, mode, height, width):
         try:
             # TODO: RECHECK
-            grid = Generator.generate_grid(height, width, is_extended)
+            grid = Generator.generate_grid(height, width, mode)
         except Exception as e:
             screen.addstr(1, 0, f"Ошибка генерации сетки: {str(e)}")
             screen.refresh()
@@ -23,7 +23,7 @@ class InteractiveMode:
         while True:
             Display.display_grid(screen, grid, cursor_row, cursor_col)
             screen.addstr(len(grid) + 1, 0, "Используйте стрелки для перемещения, "
-                                            "пробел для закрашивания/отмены, q для выхода в меню.",)
+                                            "пробел для закрашивания/отмены, q для выхода в меню.", )
             screen.refresh()
 
             key = screen.getch()
@@ -40,7 +40,7 @@ class InteractiveMode:
             elif key in (ord("q"), ord("Q"), ord("й"), ord("Й")):
                 return True
 
-            if Solver.is_valid(grid, is_extended) and Solver.is_connected(grid):
+            if Solver.is_valid(grid, mode) and Solver.is_connected(grid):
                 Display.display_grid(screen, grid, cursor_row, cursor_col)
                 screen.addstr(len(grid) + 2, 0, "Поздравляем! Вы решили головоломку!")
                 screen.refresh()
