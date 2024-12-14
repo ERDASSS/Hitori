@@ -15,16 +15,16 @@ class TestHitoriGenerator(unittest.TestCase):
         self.assertFalse(Generator.is_solvable([[1, 2], [1, 2]], Classic))
 
     def test_is_valid(self):
-        self.assertFalse(Solver.is_valid([['X', 1], ['X', 2]], Classic))
-        self.assertFalse(Solver.is_valid([['X', 1], [1, 1]], Classic))
+        self.assertFalse(Solver.grid_is_valid([['X', 1], ['X', 2]], Classic))
+        self.assertFalse(Solver.grid_is_valid([['X', 1], [1, 1]], Classic))
         # self.assertFalse(HitoriSolver.is_valid([['X', 1], [1, 'X']], False))
-        self.assertTrue(Solver.is_valid([['X', 1], [1, 2]], Classic))
+        self.assertTrue(Solver.grid_is_valid([['X', 1], [1, 2]], Classic))
 
     def test_is_valid_extended(self):
-        self.assertFalse(Solver.is_valid([['X', 1], ['X', 2], [2, 1]], Extended))
-        self.assertFalse(Solver.is_valid([['X', 1], [1, 2], [2, 1]], Extended))
-        self.assertFalse(Solver.is_valid([['X', 1], [1, 'X'], [2, 1]], Extended))
-        self.assertTrue(Solver.is_valid([['X', 1], [1, 2], ['X', 3]], Extended))
+        self.assertFalse(Solver.grid_is_valid([['X', 1], ['X', 2], [2, 1]], Extended))
+        self.assertFalse(Solver.grid_is_valid([['X', 1], [1, 2], [2, 1]], Extended))
+        self.assertFalse(Solver.grid_is_valid([['X', 1], [1, 'X'], [2, 1]], Extended))
+        self.assertTrue(Solver.grid_is_valid([['X', 1], [1, 2], ['X', 3]], Extended))
 
     def test_solve(self):
         self.assertEqual([

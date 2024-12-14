@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from Source.States.state import State
-from Source.Helpers.input_reader import InputReader
+from Source.Helpers.reader import Reader
 from Source.display import Display
 from Source.Helpers.solver import Solver
 from Source.Modes.Modes.extended import Extended
@@ -15,12 +15,12 @@ class Solve(State):
         is_extended = mode.NAME == "Extended"
         grid = []
         while True:
-            row_input = InputReader.get_row_input(screen, len(grid))
+            row_input = Reader.get_row_input(screen, len(grid))
             if is_extended and row_input == "":
                 break
 
             try:
-                row = InputReader.validate_row(grid, row_input, mode)
+                row = Reader.validate_row(grid, row_input, mode)
                 grid.append(row)
             except ValueError as e:
                 screen.addstr(len(grid) + 2, 0, f"Ошибка ввода: {str(e)}")

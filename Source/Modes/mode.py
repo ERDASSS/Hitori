@@ -17,7 +17,7 @@ class Mode:
         ...
 
     @staticmethod
-    def validate_grid(grid):
+    def validate_grid(grid: list[list[int]]):
         ...
 
     @staticmethod

@@ -14,10 +14,12 @@ logging.basicConfig(
 
 class Solver:
     @staticmethod
-    def is_valid(grid: list[list[int | str]], mode: Classic | Extended) -> bool:
+    def grid_is_valid(grid: list[list[int | str]], mode: Classic | Extended) -> bool:
         """
         Проверяет, является ли текущая сетка допустимой по правилам Hitori.
         """
+        # TODO: Вообще говоря лучше создать отдельную сущность grid. И уже в ней вызывать grid.is_valid и тд.
+
         # TODO: RECHECK
         width = len(grid[0])
         height = len(grid)
@@ -113,7 +115,7 @@ class Solver:
         def backtrack(grid: list[list[int | str]], candidates: list[tuple[int, int]]) -> list[list[list[int]]]:
             if not candidates:
                 # Проверяем, является ли решение допустимым
-                if Solver.is_valid(grid, mode) and Solver.is_connected(grid):
+                if Solver.grid_is_valid(grid, mode) and Solver.is_connected(grid):
                     return [[row[:] for row in grid]]
                 return []
 
