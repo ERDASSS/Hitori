@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from Source.Modes.mode import Mode
-from Source.Helpers.input_reader import InputReader
+from Source.Helpers.reader import Reader
 
 
 class Extended(Mode):
@@ -12,14 +12,14 @@ class Extended(Mode):
         screen.addstr(0, 0, "Введите ширину поля: ")
         screen.refresh()
 
-        width_input = InputReader.get_user_input(screen, 0, "Введите ширину поля: ")
+        width_input = Reader.get_user_input(screen, 0, "Введите ширину поля: ")
         if width_input is None:
             return None
 
         screen.addstr(1, 0, "Введите высоту поля: ")
         screen.refresh()
 
-        height_input = InputReader.get_user_input(screen, 1, "Введите высоту поля: ")
+        height_input = Reader.get_user_input(screen, 1, "Введите высоту поля: ")
         if height_input is None:
             return None
 
@@ -35,8 +35,6 @@ class Extended(Mode):
             return None
 
         return width, height
-        # if InteractiveMode.do_interactive_mode(screen, is_extended, height, width):
-        #     return True
 
     @staticmethod
     def display_input_info(screen):
@@ -44,7 +42,7 @@ class Extended(Mode):
                             " Для завершения введите пустую строку:")
 
     @staticmethod
-    def validate_grid(grid):
+    def validate_grid(grid: list[list[int]]):
         max_width = len(grid[0])
         max_height = len(grid)
         max_allowed = max(max_width, max_height)

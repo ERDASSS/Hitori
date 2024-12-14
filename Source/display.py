@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import curses
 
 
 class Display:
     @staticmethod
-    def display_grid(screen, grid, cursor_row=-1, cursor_col=-1):
+    def display_grid(screen, grid: list[list[int | str]], cursor_row=-1, cursor_col=-1):
         """
         Отображение сетки на экране с подсветкой курсора.
         """
@@ -30,7 +32,7 @@ class Display:
         screen.refresh()
 
     @staticmethod
-    def toggle_cell(grid, original_grid, row, col):
+    def toggle_cell(grid: list[list[int | str]], original_grid: list[list[int]], row: int, col: int):
         """
         Закрашивает или снимает закраску с ячейки.
         """
@@ -40,7 +42,7 @@ class Display:
             grid[row][col] = "X"
 
     @staticmethod
-    def display_solutions(screen, grid, solutions):
+    def display_solutions(screen, grid: list[list[int | str]], solutions: list[list[list[int]]]):
         """
         Отображает решения головоломки.
         """

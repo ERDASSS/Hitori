@@ -2,7 +2,7 @@ import curses
 import logging
 
 
-class InputReader:
+class Reader:
     @staticmethod
     def get_row_input(screen, row_number: int) -> str:
         """

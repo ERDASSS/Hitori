@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from Source.Modes.mode import Mode
-from Source.Helpers.input_reader import InputReader
+from Source.Helpers.reader import Reader
 
 
 class Classic(Mode):
@@ -13,7 +13,7 @@ class Classic(Mode):
         screen.addstr(0, 0, "Введите размер поля [3;5]: ")
         screen.refresh()
 
-        size_input = InputReader.get_user_input(screen, 0, "Введите размер поля [3;5]: ")
+        size_input = Reader.get_user_input(screen, 0, "Введите размер поля [3;5]: ")
         if size_input is None:
             return None
 

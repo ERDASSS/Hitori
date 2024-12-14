@@ -40,7 +40,7 @@ class Interactive(State):
             elif key in (ord("q"), ord("Q"), ord("й"), ord("Й")):
                 return True
 
-            if Solver.is_valid(grid, mode) and Solver.is_connected(grid):
+            if Solver.grid_is_valid(grid, mode) and Solver.is_connected(grid):
                 Display.display_grid(screen, grid, cursor_row, cursor_col)
                 screen.addstr(len(grid) + 2, 0, "Поздравляем! Вы решили головоломку!")
                 screen.refresh()
