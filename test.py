@@ -1,6 +1,7 @@
 from unittest.util import sorted_list_difference
 
 from solver import HitoriSolver
+from grid_generator import HitoriGenerator
 
 grid = [
 	[3, 3, 2, 4, 5],
@@ -36,7 +37,13 @@ grid_extended = [
 	[4, 6, 5]
 ]
 
+grid_solved_1 = [
+	[1, 2, 3],
+	[2, 3, 1],
+	[3, 1, 2]
+]
 
 
-solution = HitoriSolver.solve(grid_extended, True)
+
+solution = HitoriGenerator.is_solvable(grid_solved_1, False)
 print(solution)

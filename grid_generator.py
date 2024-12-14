@@ -38,6 +38,12 @@ class HitoriGenerator:
         """
         try:
             solutions = HitoriSolver.solve(grid, is_extended)
+
+            if (len(solutions) == 1):
+                x_count = sum(row.count("X") for row in solutions[0])
+                if (x_count == 0):
+                    return False
+
             return len(solutions) > 0
         except Exception as e:
             logging.debug(f"Solver error: {e}")
