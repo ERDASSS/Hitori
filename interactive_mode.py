@@ -5,7 +5,7 @@ from solver import HitoriSolver
 
 class InteractiveMode:
 	@staticmethod
-	def interactive_mode(stdscr, is_extended, height, width):
+	def do_interactive_mode(stdscr, is_extended, height, width):
 		try:
 			if is_extended:
 				grid = HitoriGenerator.generate_hitori_grid(width, height, is_extended)

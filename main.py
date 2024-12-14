@@ -100,7 +100,7 @@ def handle_interactive_mode(stdscr, is_extended):
             stdscr.getch()
             return False
 
-        if InteractiveMode.interactive_mode(stdscr, is_extended, height, width):
+        if InteractiveMode.do_interactive_mode(stdscr, is_extended, height, width):
             return True
     else:
         stdscr.addstr(0, 0, "Введите размер поля [3;5]: ")
@@ -120,7 +120,7 @@ def handle_interactive_mode(stdscr, is_extended):
             stdscr.getch()
             return False
 
-        if InteractiveMode.interactive_mode(stdscr, is_extended, size, size):
+        if InteractiveMode.do_interactive_mode(stdscr, is_extended, size, size):
             return True
 
 def get_user_input(stdscr, row, prompt):

@@ -1,20 +1,10 @@
 import curses
 import logging
 from solver import HitoriSolver
+from display import Display
 
 class SolveMode:
-	@staticmethod
-	def display_instructions(stdscr, is_extended):
-		"""
-		Отображает инструкции для ввода головоломки.
-		"""
-		stdscr.clear()
-		if is_extended:
-			stdscr.addstr(0, 0,
-						  "Введите головоломку строка за строкой, разделяя числа пробелами. Для завершения введите пустую строку:")
-		else:
-			stdscr.addstr(0, 0, "Введите головоломку строка за строкой, разделяя числа пробелами:")
-		stdscr.refresh()
+
 
 	@staticmethod
 	def get_row_input(stdscr, row_number):
@@ -76,40 +66,10 @@ class SolveMode:
 					if num > max_allowed:
 						raise ValueError(f"Число {num} превышает финальное допустимое значение {max_allowed}.")
 
-	@staticmethod
-	def display_solutions(stdscr, grid, solutions, is_extended):
-		"""
-		Отображает решения головоломки.
-		"""
-		solution_index = 0
-		while True:
-			solution = solutions[solution_index]
-
-			# Очищаем экран от предыдущего решения
-			stdscr.clear()
-			stdscr.addstr(0, 0, "Введенная головоломка:")
-			for row_idx, row in enumerate(grid):
-				stdscr.addstr(row_idx + 1, 0, " ".join(map(str, row)))
-
-			stdscr.addstr(len(grid) + 2, 0, f"Решение {solution_index + 1} из {len(solutions)}:")
-
-			for row_idx, row in enumerate(solution):
-				stdscr.addstr(len(grid) + 3 + row_idx, 0, " ".join(map(str, row)))
-
-			stdscr.addstr(len(grid) + 3 + len(solution), 0, "Нажмите стрелки для навигации, q для выхода в меню.")
-			stdscr.refresh()
-
-			key = stdscr.getch()
-			if key in (ord("q"), ord("Q"), ord("й"), ord("Й")):
-				return True  # Возвращаем True, чтобы указать, что пользователь вышел в меню
-			elif key == curses.KEY_LEFT:  # Стрелка влево
-				solution_index = max(0, solution_index - 1)
-			elif key == curses.KEY_RIGHT:  # Стрелка вправо
-				solution_index = min(len(solutions) - 1, solution_index + 1)
 
 	@staticmethod
 	def solve_mode(stdscr, is_extended):
-		SolveMode.display_instructions(stdscr, is_extended)
+		Display.display_instructions(stdscr, is_extended)
 
 		grid = []
 		while True:
@@ -149,4 +109,4 @@ class SolveMode:
 			stdscr.getch()
 			return False  # Возвращаем False, чтобы указать, что режим завершился с ошибкой
 
-		return SolveMode.display_solutions(stdscr, grid, solutions, is_extended)
+		return Display.display_solutions(stdscr, grid, solutions, is_extended)
