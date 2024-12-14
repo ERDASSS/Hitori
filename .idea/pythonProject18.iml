@@ -7,4 +7,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="C:\Users\com12\PycharmProjects\Hitori\main.py" />
+    <option name="removeUnused" value="true" />
+  </component>
 </module>
