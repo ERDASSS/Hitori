@@ -77,6 +77,28 @@ class TestHitoriGenerator(unittest.TestCase):
             ], Extended
             ))
 
+    def test_check_neighbours_classic(self):
+        grid_false = [[1, 'X'], [2, 'X']]
+        grid_true = [[1, 'X'], [2, 1]]
+        self.assertFalse(Solver.check_neighbours(grid_false, Classic))
+        self.assertTrue(Solver.check_neighbours(grid_true, Classic))
+
+    def test_check_neighbours_extended(self):
+        grid_false = [[1, 'X'], [2, 'X'], [3, 1]]
+        grid_true = [[1, 'X'], [2, 1], [3, 2]]
+        self.assertFalse(Solver.check_neighbours(grid_false, Classic))
+        self.assertTrue(Solver.check_neighbours(grid_true, Classic))
+
+    def test_is_connected(self):
+        grid_false = [[1, 'X'], ['X', 2]]
+        grid_true = [[1, 'X'], [2, 1]]
+        grid_true_extended = [[1, 'X'], [2, 1], [3, 2]]
+        grid_false_extended = [[1, 'X'], ['X', 2], [3, 1]]
+        self.assertFalse(Solver.is_connected(grid_false))
+        self.assertTrue(Solver.is_connected(grid_true))
+        self.assertFalse(Solver.is_connected(grid_false_extended))
+        self.assertTrue(Solver.is_connected(grid_true_extended))
+
 
 if __name__ == '__main__':
     unittest.main()
