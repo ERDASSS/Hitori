@@ -11,8 +11,8 @@ Extended = Extended()
 
 class TestHitoriGenerator(unittest.TestCase):
     def test_is_solvable(self):
-        self.assertTrue(Generator.is_solvable([[1, 1], [1, 2]], Classic))
-        self.assertFalse(Generator.is_solvable([[1, 2], [1, 2]], Classic))
+        self.assertTrue(Solver.is_solvable([[1, 1], [1, 2]], Classic))
+        self.assertFalse(Solver.is_solvable([[1, 2], [1, 2]], Classic))
 
     def test_is_valid(self):
         self.assertFalse(Solver.grid_is_valid([['X', 1], ['X', 2]], Classic))

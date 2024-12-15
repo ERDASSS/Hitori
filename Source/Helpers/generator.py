@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from Source.Helpers.solver import Solver
 from Source.Modes.Modes.classic import Classic
 from Source.Modes.Modes.extended import Extended
+from Source.Helpers.solver import Solver
 import random
 import logging
 
@@ -36,31 +36,11 @@ class Generator:
         return grid
 
     @staticmethod
-    def is_solvable(grid: list[list[int]], mode: Classic | Extended) -> bool:
-        # TODO: Хуйня какая-то. Уже же есть solver. Нахуя ещё тут такой метод
-        """
-        Проверяет, решаема ли данная сетка.
-        """
-        try:
-            solutions = Solver.solve(grid, mode)
-
-            if len(solutions) == 1:
-                x_count = sum(row.count("X") for row in solutions[0])
-                if x_count == 0:
-                    return False
-
-            return len(solutions) > 0
-        except Exception as e:
-            logging.debug(f"Solver error: {e}")
-            return False
-
-    @staticmethod
     def generate_grid(width: int, height: int, mode: Classic | Extended) -> list[list[int]]:
         """
         Генерирует решаемую сетку для Hitori.
         """
         logging.debug(f"generate_hitori_grid {width}, {height}, {mode.NAME}")
-        # TODO: RECHECK
         max_value = max(width, height)
         logging.debug(f"max_value {max_value}")
 
@@ -69,7 +49,7 @@ class Generator:
             grid = Generator._generate_constrained_grid(width, height, max_value)
             logging.debug(f"Attempt {attempts + 1}: {grid}")
 
-            if Generator.is_solvable(grid, mode):
+            if Solver.is_solvable(grid, mode):
                 print(f"Сгенерирована решаемая сетка за {attempts + 1} попыток.")
                 return grid
 

@@ -18,9 +18,6 @@ class Solver:
         """
         Проверяет, является ли текущая сетка допустимой по правилам Hitori.
         """
-        # TODO: Вообще говоря лучше создать отдельную сущность grid. И уже в ней вызывать grid.is_valid и тд.
-
-        # TODO: RECHECK
         width = len(grid[0])
         height = len(grid)
 
@@ -50,7 +47,6 @@ class Solver:
         """
         Проверяет, что никакие две закрашенные клетки не являются соседними.
         """
-        # TODO: RECHECK
         width = len(grid[0])
         height = len(grid)
 
@@ -104,6 +100,24 @@ class Solver:
         return count == total_unshaded
 
     @staticmethod
+    def is_solvable(grid: list[list[int]], mode: Classic | Extended) -> bool:
+        """
+        Проверяет, решаема ли данная сетка.
+        """
+        try:
+            solutions = Solver.solve(grid, mode)
+
+            if len(solutions) == 1:
+                x_count = sum(row.count("X") for row in solutions[0])
+                if x_count == 0:
+                    return False
+
+            return len(solutions) > 0
+        except Exception as e:
+            logging.debug(f"Solver error: {e}")
+            return False
+
+    @staticmethod
     def solve(grid: list[list[int | str]], mode: Classic | Extended) -> list[list[list[int]]]:
         """
         Решает головоломку Hitori. Возвращает список состояний сетки.
@@ -111,7 +125,6 @@ class Solver:
         width = len(grid[0])
         height = len(grid)
 
-        # TODO: я не ебу какой тут тип правильный
         def backtrack(grid: list[list[int | str]], candidates: list[tuple[int, int]]) -> list[list[list[int]]]:
             if not candidates:
                 # Проверяем, является ли решение допустимым

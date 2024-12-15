@@ -9,7 +9,6 @@ class Classic(Mode):
 
     @staticmethod
     def read_grid_info(screen) -> None | tuple[int, int]:
-        # TODO: A че больше нельзя?
         screen.addstr(0, 0, "Введите размер поля [3;5]: ")
         screen.refresh()
 
@@ -37,7 +36,6 @@ class Classic(Mode):
     def validate_row(row: list[int]):
         for num in row:
             if num > len(row):
-                # TODO: дурацкое правило
                 raise ValueError("Числа не должны превышать размер квадрата")
             if num <= 0:
                 raise ValueError("Числа должны быть больше 0")

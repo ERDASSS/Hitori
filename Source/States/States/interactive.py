@@ -9,7 +9,6 @@ class Interactive(State):
     @staticmethod
     def handle(screen, mode, height, width):
         try:
-            # TODO: RECHECK
             grid = Generator.generate_grid(height, width, mode)
         except Exception as e:
             screen.addstr(1, 0, f"Ошибка генерации сетки: {str(e)}")
