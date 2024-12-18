@@ -1,1 +1,0 @@
-2024-12-15 01:35:41,175 - DEBUG - Solver error: 'bool' object has no attribute 'get_neighbours'
