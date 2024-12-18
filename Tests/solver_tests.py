@@ -2,6 +2,7 @@ from Source.Helpers.solver import Solver
 from Source.Modes.Modes.classic import Classic
 from Source.Modes.Modes.extended import Extended
 from Source.hitori import HitoriCLI
+from Source.Helpers.reader import Reader
 import unittest
 
 from unittest.mock import patch
@@ -101,7 +102,7 @@ class TestHitoriGenerator(unittest.TestCase):
         self.assertFalse(Solver.is_connected(grid_false_extended))
         self.assertTrue(Solver.is_connected(grid_true_extended))
 
-    def test_solver_output_classic_3x3_semicolons(self):
+    def test_solver_output_classic_3x3(self):
         with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
             HitoriCLI.print_solution_by_args([[4, 5, 5], [3, 5, 1], [4, 1, 1]], Classic, False)
             output = mock_stdout.getvalue()
@@ -109,7 +110,7 @@ class TestHitoriGenerator(unittest.TestCase):
             assert "3 5 1" in output
             assert "X 1 X" in output
 
-    def test_solver_output_classic_4x4_all_spaces(self):
+    def test_solver_output_classic_4x4_all(self):
         with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
             HitoriCLI.print_solution_by_args([[2, 1, 4, 3], [2, 4, 3, 1], [4, 4, 1, 2], [1, 2, 3, 1]], Classic, True)
             output = mock_stdout.getvalue()
@@ -130,6 +131,76 @@ class TestHitoriGenerator(unittest.TestCase):
             assert "X 4 X 1" in output
             assert "4 X 1 2" in output
             assert "1 2 3 X" in output
+
+    def test_solver_output_extended_3x4_all(self):
+        with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
+            HitoriCLI.print_solution_by_args([
+                [4, 2, 3],
+                [1, 4, 2],
+                [2, 3, 4],
+                [1, 4, 2]
+            ], Extended, True)
+            output = mock_stdout.getvalue()
+            # Первое
+            assert "4 2 3" in output
+            assert "X 4 X" in output
+            assert "2 3 4" in output
+            assert "1 X 2" in output
+
+            # Последнее
+            assert "4 2 3" in output
+            assert "1 X 2" in output
+            assert "2 3 4" in output
+            assert "X 4 X" in output
+
+    def test_parser_grid_for_args_spaces(self):
+        grid_str = "4 2 3 1 4 2 2 3 4 1 4 2:3x4"
+        grid = Reader.parse_board_by_arg(grid_str)
+        expected_grid = [
+            [4, 2, 3],
+            [1, 4, 2],
+            [2, 3, 4],
+            [1, 4, 2]
+        ]
+        self.assertEqual(grid, expected_grid)
+
+        grid_str = "2 1 4 3 2 4 3 1 4 4 1 2 1 2 3 1"
+        grid = Reader.parse_board_by_arg(grid_str)
+        expected_grid = [
+            [2, 1, 4, 3],
+            [2, 4, 3, 1],
+            [4, 4, 1, 2],
+            [1, 2, 3, 1]
+        ]
+        self.assertEqual(grid, expected_grid)
+
+        grid_str = "2 1 4 3"
+        grid = Reader.parse_board_by_arg(grid_str)
+        expected_grid = [
+            [2, 1],
+            [4, 3],
+        ]
+        self.assertEqual(grid, expected_grid)
+
+    def test_parser_grid_for_args_semicolons(self):
+        grid_str = "4,5,5;3,5,1;4,1,1"
+        grid = Reader.parse_board_by_arg(grid_str)
+        expected_grid = [
+            [4, 5, 5],
+            [3, 5, 1],
+            [4, 1, 1]
+        ]
+        self.assertEqual(grid, expected_grid)
+
+        grid_str = "4,2,3;1,4,2;2,3,4;1,4,2"
+        grid = Reader.parse_board_by_arg(grid_str)
+        expected_grid = [
+            [4, 2, 3],
+            [1, 4, 2],
+            [2, 3, 4],
+            [1, 4, 2]
+        ]
+        self.assertEqual(grid, expected_grid)
 
 
 if __name__ == '__main__':
