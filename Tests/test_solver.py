@@ -1,3 +1,8 @@
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
+
 from Source.Helpers.solver import Solver
 from Source.Modes.Modes.classic import Classic
 from Source.Modes.Modes.extended import Extended
@@ -8,7 +13,7 @@ Classic = Classic()
 Extended = Extended()
 
 
-class TestHitoriGenerator(unittest.TestCase):
+class TestSolver(unittest.TestCase):
     def test_is_solvable(self):
         self.assertTrue(Solver.is_solvable([[1, 1], [1, 2]], Classic))
         self.assertFalse(Solver.is_solvable([[1, 2], [1, 2]], Classic))

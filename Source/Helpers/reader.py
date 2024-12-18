@@ -87,7 +87,7 @@ class Reader:
             elif "," in board_str:
                 board = [[int(num) for num in row.split(",")] for row in board_str.split(";")]
             else:
-                numbers_str, dimensions = parts[0].strip()
+                numbers_str = parts[0].strip()
                 numbers = list(map(int, numbers_str.split()))
                 width = height = int(len(numbers) ** 0.5)
 

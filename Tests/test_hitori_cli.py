@@ -1,3 +1,8 @@
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
+
 from Source.Modes.Modes.classic import Classic
 from Source.Modes.Modes.extended import Extended
 from Source.hitori import HitoriCLI
@@ -11,7 +16,7 @@ Classic = Classic()
 Extended = Extended()
 
 
-class HitoriCLITests(unittest.TestCase):
+class TestHitoriCLI(unittest.TestCase):
     def test_solver_output_classic_3x3(self):
         with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
             HitoriCLI.print_solution_by_args([[4, 5, 5], [3, 5, 1], [4, 1, 1]], Classic, False)
