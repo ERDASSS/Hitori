@@ -47,9 +47,12 @@ class Extended(Mode):
         max_height = len(grid)
         max_allowed = max(max_width, max_height)
         for row in grid:
+            # TODO: не уверен в этом
+            Mode.validate_row(row)
             for num in row:
                 if num > max_allowed:
                     raise ValueError(f"Число {num} превышает финальное допустимое значение {max_allowed}.")
+
 
     @staticmethod
     def get_neighbours() -> list:

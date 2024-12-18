@@ -4,9 +4,12 @@ from Source.Modes.Modes.classic import Classic
 from Source.Modes.Modes.extended import Extended
 from Source.States.States.solve import Solve
 from Source.States.States.interactive import Interactive
+from Source.Helpers.solver import Solver
 
+import argparse
 import logging
 import curses
+import sys
 
 logging.basicConfig(
     filename="Source/debug.log",
@@ -101,5 +104,66 @@ def main(screen):
         handle_main_menu(screen, mode)
 
 
+def parse_board(board_str: str):
+    """Parse the board string into a 2D list."""
+    try:
+        board = [[int(num) for num in row.split(",")] for row in board_str.split(";")]
+        return board
+    except ValueError:
+        raise argparse.ArgumentTypeError(
+            "Некорректный формат доски. Убедитесь, что строки разделены ';' и сами значения разделены ','")
+
+
+def print_solution_by_args(bord: list[list[int]], game_mode: Classic | Extended, show_all_solutions: bool):
+    solutions = Solver.solve(bord, game_mode)
+
+    if len(solutions) == 0:
+        print("Решений для данного поля нету.")
+        return
+
+    def _show_solution(_solution: list[list[int | str]]):
+        res = ""
+        for row in _solution:
+            res += " ".join(map(str, row)) + "\n"
+        print(res)
+
+    if show_all_solutions:
+        current_solution_index = 1
+        len_solutions = len(solutions)
+        for solution in solutions:
+            print(f"\nРешениe {current_solution_index} из {len_solutions}:")
+            _show_solution(solution)
+    else:
+        print("\nОдно из решений:")
+        _show_solution(solutions[0])
+
+
 if __name__ == "__main__":
-    curses.wrapper(main)
+    parser = argparse.ArgumentParser(description="Play or solve a Hitori puzzle.")
+    parser.add_argument(
+        "-s", "--solve",
+        type=parse_board,
+        help="Решить головоломку. Введите поле в следующем формате: '[a, b, ... ];[ ... ]; ... ;[ ... ]'.",
+    )
+    parser.add_argument(
+        "-m", "--mode",
+        choices=["Classic", "Extended"],
+        help="Определить режим для решения головоломки (Classic или Extended).",
+    )
+    parser.add_argument('-a', '--all', action='store_true', help='Отображать все решения.')
+
+    args = parser.parse_args()
+
+    if args.solve:
+        if not args.mode:
+            print("Ошибка: режим (-m или --mode) обязателен для решения головоломки.", file=sys.stderr)
+            sys.exit(1)
+        board = args.solve
+        mode = Classic if args.mode == "Classic" else Extended
+        try:
+            mode.validate_grid(board)
+        except ValueError as e:
+            print("Некорректные данные: ", e)
+        print_solution_by_args(board, mode, args.all)
+    else:
+        curses.wrapper(main)
