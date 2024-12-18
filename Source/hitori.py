@@ -6,7 +6,6 @@ from Source.States.States.solve import Solve
 from Source.States.States.interactive import Interactive
 from Source.Helpers.solver import Solver
 
-import argparse
 import logging
 import curses
 

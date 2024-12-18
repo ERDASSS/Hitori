@@ -104,3 +104,34 @@ class Reader:
             return board
         except Exception as e:
             raise ValueError()
+
+    @staticmethod
+    def parse_board_from_file(file_path: str):
+        """Parse the board from a file."""
+        try:
+            with open(file_path, "r") as f:
+                board_str = f.read().strip()
+
+                # New logic: Check for space-separated and newline-separated format
+                if "\n" in board_str and not (", " in board_str or ": " in board_str):
+                    board = [[int(num) for num in line.split()] for line in board_str.splitlines()]
+                else:
+                    # Fall back to parsing using existing logic
+                    return Reader.parse_board_by_arg(board_str)
+
+                len_row = len(board[0])
+                for row in board:
+                    if len_row != len(row):
+                        raise ValueError("Rows are not of consistent length in the file.")
+
+                return board
+        except FileNotFoundError:
+            raise ValueError(f"File not found: {file_path}")
+        except PermissionError:
+            raise ValueError(f"Permission denied: {file_path}")
+        except IsADirectoryError:
+            raise ValueError(f"Expected a file but found a directory: {file_path}")
+        except ValueError as e:
+            raise ValueError(f"Error parsing board from file: {e}")
+        except Exception as e:
+            raise ValueError(f"An unexpected error occurred while reading the file: {e}")

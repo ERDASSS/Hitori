@@ -71,6 +71,5 @@ class TestReader(unittest.TestCase):
             Reader.parse_board_by_arg("1 a 3 4 5 6 : 2x3")  # Non-integer input
 
 
-
 if __name__ == '__main__':
     unittest.main()
