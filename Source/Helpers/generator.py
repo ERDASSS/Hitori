@@ -50,7 +50,8 @@ class Generator:
             logging.debug(f"Attempt {attempts + 1}: {grid}")
 
             if Solver.is_solvable(grid, mode):
-                print(f"Сгенерирована решаемая сетка за {attempts + 1} попыток.")
+                # TODO: пока закомитил, но потом убрать надо
+                # print(f"Сгенерирована решаемая сетка за {attempts + 1} попыток.")
                 return grid
 
             attempts += 1

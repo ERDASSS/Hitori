@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from Source.States.state import State
 from Source.Helpers.reader import Reader
-from Source.display import Display
+from Source.Helpers.display import Display
 from Source.Helpers.solver import Solver
 from Source.Modes.Modes.extended import Extended
 from Source.Modes.Modes.classic import Classic

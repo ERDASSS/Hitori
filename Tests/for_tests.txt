@@ -1,0 +1,8 @@
+python main.py -s "4,5,5;3,5,1;4,1,1" -m Classic -a
+
+Одно из решений:
+4 X 5
+3 5 1
+X 1 X
+
+python main.py -s ";3,5,1;4,1,1" -m Classic -a

@@ -1,5 +1,5 @@
 from Source.Helpers.generator import Generator
-from Source.display import Display
+from Source.Helpers.display import Display
 from Source.Helpers.solver import Solver
 from Source.States.state import State
 import curses
