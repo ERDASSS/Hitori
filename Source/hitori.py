@@ -124,6 +124,7 @@ class HitoriCLI:
             for solution in solutions:
                 print(f"\nРешениe {current_solution_index} из {len_solutions}:\n")
                 _show_solution(solution)
+                current_solution_index += 1
         else:
             print("\nОдно из решений:")
             _show_solution(solutions[0])
