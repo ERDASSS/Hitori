@@ -11,7 +11,6 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-
 class Solver:
     @staticmethod
     def grid_is_valid(grid: list[list[int | str]], mode: Classic | Extended) -> bool:
@@ -174,6 +173,205 @@ class Solver:
             for positions in col_counts.values():
                 if len(positions) > 1:
                     candidates.extend(positions)
+
+        original_grid = [row[:] for row in grid]
+        return backtrack(grid, list(set(candidates)))
+
+
+class SolverTriangle:
+    @staticmethod
+    def get_neighbors(grid, i, j):
+        neighbors = []
+        if j > i:
+            raise ValueError
+        # Up-right
+        if i > 0 and j < len(grid[i - 1]):
+            neighbors.append((i - 1, j))
+        # Up-left
+        if i > 0 and j - 1 >= 0:
+            neighbors.append((i - 1, j - 1))
+        # Down-left
+        if i + 1 < len(grid) and j < len(grid[i + 1]):
+            neighbors.append((i + 1, j))
+        # Down-right
+        if i + 1 < len(grid) and j + 1 < len(grid[i + 1]):
+            neighbors.append((i + 1, j + 1))
+        # Left
+        if j > 0:
+            neighbors.append((i, j - 1))
+        # Right
+        if j < len(grid[i]) - 1:
+            neighbors.append((i, j + 1))
+
+        return neighbors
+
+    @staticmethod
+    def check_neighbours(grid: list[list[int | str]]) -> bool:
+        """
+        Checks that no two "X" cells are adjacent in the triangular grid.
+        """
+        for i in range(len(grid)):
+            for j in range(len(grid[i])):
+                if grid[i][j] == "X":
+                    neighbors = SolverTriangle.get_neighbors(grid, i, j)
+                    for ni, nj in neighbors:
+                        if grid[ni][nj] == "X":
+                            return False
+        return True
+
+    @staticmethod
+    def is_connected(grid: list[list[int | str]]) -> bool:
+        """
+        Checks if all non-"X" cells in the triangular grid form a single connected region.
+        """
+        height = len(grid)
+        visited = [[False] * len(row) for row in grid]
+
+        # Find the starting cell that is not "X"
+        start = None
+        for i in range(height):
+            for j in range(len(grid[i])):
+                if grid[i][j] != "X":
+                    start = (i, j)
+                    break
+            if start:
+                break
+
+        if not start:
+            return False  # No non-"X" cells
+
+        # BFS to check connectivity
+        queue = [start]
+        visited[start[0]][start[1]] = True
+        count = 1
+        total_non_X = sum(1 for row in grid for cell in row if cell != "X")
+
+        while queue:
+            x, y = queue.pop(0)
+            neighbors = SolverTriangle.get_neighbors(grid, x, y)
+            for nx, ny in neighbors:
+                if not visited[nx][ny] and grid[nx][ny] != "X":
+                    visited[nx][ny] = True
+                    queue.append((nx, ny))
+                    count += 1
+
+        return count == total_non_X
+
+    @staticmethod
+    def grid_is_valid(grid: list[list[int | str]]) -> bool:
+        """
+        Checks if the current grid is valid according to Hitori rules for a triangular grid.
+        """
+        height = len(grid)
+        step = 0
+
+        for current_row in range(0, height, 2):
+            col_counts_begin = {}
+            col_counts_end = {}
+
+            # Traverse from the current row downwards diagonally to the right
+            for i in range(current_row, height):
+                if step >= len(grid[i]):
+                    break
+                value_begin = grid[i][step]
+                col_counts_begin.setdefault(value_begin, []).append((i, step))
+
+            # Traverse from the current row downwards diagonally to the left
+            for i in range(current_row, height):
+                if step >= len(grid[i]):
+                    break
+                value_end = grid[i][len(grid[i]) - 1 - step]
+                col_counts_end.setdefault(value_end, []).append((i, len(grid[i]) - 1 - step))
+
+            # Check for duplicates in the beginning and ending diagonals
+            for positions in col_counts_begin.values():
+                if len(positions) > 1:
+                    return False
+
+            for positions in col_counts_end.values():
+                if len(positions) > 1:
+                    return False
+
+            step += 1
+
+        # Check for duplicates in horizontal rows
+        for row in grid:
+            seen = {}
+            for value in row:
+                if value != "X":
+                    if value in seen:
+                        return False
+                    seen[value] = True
+
+        return SolverTriangle.check_neighbours(grid) and SolverTriangle.is_connected(grid)
+
+    @staticmethod
+    def solve(grid: list[list[int | str]]) -> list[list[list[int]]]:
+        """
+		Решает треугольное поле Hitori. Возвращает список состояний сетки.
+		"""
+
+        def backtrack(grid: list[list[int | str]], candidates: list[tuple[int, int]]) -> list[list[list[int]]]:
+            if not candidates:
+                # Проверяем, является ли решение допустимым
+                if SolverTriangle.grid_is_valid(grid) and SolverTriangle.is_connected(grid):
+                    return [[row[:] for row in grid]]
+                return []
+
+            row, col = candidates.pop()
+            solutions = []
+
+            # Пробуем оставить клетку как есть
+            solutions.extend(backtrack([row[:] for row in grid], candidates[:]))
+
+            # Пробуем закрасить клетку
+            grid[row][col] = "X"
+            if SolverTriangle.check_neighbours(grid) and SolverTriangle.is_connected(grid):
+                solutions.extend(backtrack([row[:] for row in grid], candidates[:]))
+
+            # Отменяем изменения
+            grid[row][col] = original_grid[row][col]
+            candidates.append((row, col))
+
+            return solutions
+
+        # Формируем список кандидатов для закраски (ячейки с дубликатами в строках или "треугольных" колонках)
+        candidates = set()
+        for i, row in enumerate(grid):
+            row_counts = {}
+            for j, value_begin in enumerate(row):
+                # Анализ строки
+                if value_begin not in row_counts:
+                    row_counts[value_begin] = []
+                row_counts[value_begin].append((i, j))
+
+            for positions in row_counts.values():
+                if len(positions) > 1:
+                    candidates.update(positions)
+
+        step = 0
+
+        for current_row in range(0, len(grid), 2):
+            col_counts_begin = {}
+            col_counts_end = {}
+
+            for i in range(current_row, len(grid)):
+                value_begin = grid[i][step]
+                col_counts_begin.setdefault(value_begin, []).append((i, step))
+
+            for i in range(current_row, len(grid)):
+                value_end = grid[i][len(grid[i]) - 1 - step]
+                col_counts_end.setdefault(value_end, []).append((i, len(grid[i]) - 1 - step))
+
+            for positions in col_counts_begin.values():
+                if len(positions) > 1:
+                    candidates.update(positions)
+
+            for positions in col_counts_end.values():
+                if len(positions) > 1:
+                    candidates.update(positions)
+
+            step += 1
 
         original_grid = [row[:] for row in grid]
         return backtrack(grid, list(set(candidates)))

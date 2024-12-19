@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from Source.Modes.Modes.classic import Classic
 from Source.Modes.Modes.extended import Extended
-from Source.Helpers.solver import Solver
+from Source.Helpers.solver import Solver, SolverTriangle
 import random
 import logging
 
@@ -57,3 +57,39 @@ class Generator:
             attempts += 1
 
         raise Exception("Не удалось сгенерировать решаемую сетку за отведенное число попыток.")
+
+    @staticmethod
+    def generate_triangle_grid(size: int) -> list[list[int]]:
+        """
+		Генерирует треугольное поле для Hitori с учетом заданного размера.
+		Верхняя строка имеет `size` ячеек, а нижняя строка сужается до 1.
+		"""
+        max_value = size  # Максимальное значение чисел в сетке
+        logging.debug(f"max_value {max_value}")
+
+        attempts = 0
+        while attempts < Generator.MAX_ATTEMPTS:
+            # Генерация треугольной сетки
+            grid = []
+            for i in range(size):
+                row_width = i + 1  # Количество ячеек в текущей строке
+                row = [0] * row_width
+                for j in range(row_width):
+                    # Генерация чисел с ограничениями (ряд и колонка)
+                    possible_values = set(range(1, max_value + 1))
+                    if i > 0 and j < len(grid[i - 1]):
+                        possible_values.discard(grid[i - 1][j])
+                    if j > 0:
+                        possible_values.discard(row[j - 1])
+
+                    row[j] = random.choice(list(possible_values))
+                grid.append(row)
+
+
+            if SolverTriangle.solve_triangle(grid):
+                print(SolverTriangle.solve_triangle(grid))
+                return grid
+
+            attempts += 1
+
+        raise Exception("Не удалось сгенерировать решаемое треугольное поле за отведенное число попыток.")
