@@ -32,6 +32,40 @@ class Display:
         screen.refresh()
 
     @staticmethod
+    def display_grid_triangle(screen, grid: list[list[int | str]], cursor_row=-1, cursor_col=-1):
+        """
+		Отображение сетки на экране с подсветкой курсора в форме треугольника.
+		"""
+        screen.clear()
+        max_width = max(len(row) for row in grid)  # Определяем максимальную ширину строки для выравнивания
+
+        for row_idx, row in enumerate(grid):
+            row_offset = (max_width - len(row))  # Определяем отступ для выравнивания строк треугольника
+            for col_idx, cell in enumerate(row):
+                # Подсветка ячейки под курсором
+                if row_idx == cursor_row and col_idx == cursor_col:
+                    screen.attron(curses.A_REVERSE)
+
+                # Вычисляем позицию символа с учётом отступов
+                x_position = row_offset + col_idx * 2
+
+                # Отображение содержимого ячейки (с учетом символа "X")
+                if cell == "X":
+                    if row_idx == cursor_row and col_idx == cursor_col:
+                        attr_for_chars = curses.A_BOLD | curses.A_REVERSE
+                    else:
+                        attr_for_chars = curses.A_BOLD
+                    screen.addstr(row_idx, x_position, str(cell), attr_for_chars)
+                else:
+                    screen.addstr(row_idx, x_position, str(cell))
+
+                # Выключение подсветки
+                if row_idx == cursor_row and col_idx == cursor_col:
+                    screen.attroff(curses.A_REVERSE)
+        screen.refresh()
+
+
+    @staticmethod
     def toggle_cell(grid: list[list[int | str]], original_grid: list[list[int]], row: int, col: int):
         """
         Закрашивает или снимает закраску с ячейки.

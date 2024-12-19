@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from Source.Modes.Modes.classic import Classic
 from Source.Modes.Modes.extended import Extended
+from Source.Modes.Modes.triangle import Triangle
 from Source.States.States.solve import Solve
 from Source.States.States.interactive import Interactive
 from Source.Helpers.solver import Solver
@@ -31,9 +32,9 @@ class HitoriCLI:
         screen.refresh()
 
     @staticmethod
-    def handle_mode_selection(screen) -> None | Classic | Extended:
+    def handle_mode_selection(screen) -> None | Classic | Extended | Triangle:
         """Функция для обработки выбора версии игры."""
-        mode_menu = ["Hitori Classic", "Hitori Extended", "Выход"]
+        mode_menu = ["Hitori Classic", "Hitori Extended", "Hitori Triangle", "Выход"]
         current_row = 0
 
         while True:
@@ -52,12 +53,15 @@ class HitoriCLI:
                     mode = Extended()
                     break
                 elif current_row == 2:
+                    mode = Triangle()
+                    break
+                elif current_row == 3:
                     return None  # Выход из программы
 
         return mode
 
     @staticmethod
-    def handle_main_menu(screen, mode: Classic | Extended):
+    def handle_main_menu(screen, mode: Classic | Extended | Triangle):
         """Функция для обработки основного меню."""
         main_menu = ["Интерактивный режим", "Решить головоломку", "Назад"]
         current_row = 0
@@ -82,14 +86,23 @@ class HitoriCLI:
                     return  # Возвращаемся в меню выбора версии
 
     @staticmethod
-    def handle_interactive_mode(screen, mode: Classic | Extended) -> bool:
+    def handle_interactive_mode(screen, mode: Classic | Extended | Triangle) -> bool:
         """Функция для обработки интерактивного режима."""
         screen.clear()
         size_data = mode.read_grid_info(screen)
+        logging.debug(f"current mode {mode}")
+
+        if size_data and mode.NAME == "Triangle":
+            width, height = size_data
+            if Interactive.handle_triangle(screen, height):
+                return True
+
         if size_data:
             width, height = size_data
             if Interactive.handle(screen, mode, height, width):
                 return True
+
+
         return False
 
     @staticmethod

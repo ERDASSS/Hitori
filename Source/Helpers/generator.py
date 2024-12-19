@@ -86,8 +86,9 @@ class Generator:
                 grid.append(row)
 
 
-            if SolverTriangle.solve_triangle(grid):
-                print(SolverTriangle.solve_triangle(grid))
+            if SolverTriangle.solve(grid):
+                # print(SolverTriangle.solve(grid))
+                # print(attempts)
                 return grid
 
             attempts += 1
