@@ -10,17 +10,17 @@ class Triangle(Mode):
 
 	@staticmethod
 	def read_grid_info(screen) -> None | tuple[int, int]:
-		screen.addstr(0, 0, "Введите размер поля [3;6]: ")
+		screen.addstr(0, 0, "Введите размер поля [3;5]: ")
 		screen.refresh()
 
-		size_input = Reader.get_user_input(screen, 0, "Введите размер поля [3;6]: ")
+		size_input = Reader.get_user_input(screen, 0, "Введите размер поля [3;5]: ")
 		if size_input is None:
 			return None
 
 		try:
 			size = int(size_input)
-			if size < 3 or size > 6:
-				raise ValueError("Размер поля должен быть в пределах [3;6]")
+			if size < 3 or size > 5:
+				raise ValueError("Размер поля должен быть в пределах [3;5]")
 		except ValueError as e:
 			screen.addstr(1, 0, f"Ошибка: {str(e)}")
 			screen.refresh()
