@@ -1,4 +1,7 @@
 from __future__ import annotations
+
+import logging
+
 from Source.Modes.mode import Mode
 from Source.Helpers.reader import Reader
 
@@ -32,9 +35,18 @@ class Triangle(Mode):
 
 	@staticmethod
 	def validate_grid(grid: list[list[int]]):
+		logging.debug(f"grid {grid}")
+		logging.debug(f"grid[-1] {grid[-1]}")
 		max_allowed = len(grid[-1])
+		logging.debug("here2")
 		for row in grid:
 			Mode.validate_row(row)
 			for num in row:
 				if num > max_allowed:
 					raise ValueError(f"Число {num} превышает финальное допустимое значение {max_allowed}.")
+
+	@staticmethod
+	def validate_row(row: list[int], max_len=None):
+		if len(row) > max_len:
+			logging.debug(f"row len {len(row)}")
+			raise ValueError(f"Количество чисел превышает номер текущей строки")

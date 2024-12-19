@@ -262,37 +262,28 @@ class SolverTriangle:
         """
         Checks if the current grid is valid according to Hitori rules for a triangular grid.
         """
-        height = len(grid)
-        step = 0
+        for current_row in range(0, len(grid)):
+            col_counts_slash = {}
+            col_counts_backslash = {}
+            current_j_slash = 0
+            current_j_backslash = current_row
 
-        for current_row in range(0, height, 2):
-            col_counts_begin = {}
-            col_counts_end = {}
+            for i in range(current_row, len(grid)):
+                value = grid[i][current_j_slash]
+                col_counts_slash.setdefault(value, []).append((i, current_j_slash))
+                current_j_slash += 1
 
-            # Traverse from the current row downwards diagonally to the right
-            for i in range(current_row, height):
-                if step >= len(grid[i]):
-                    break
-                value_begin = grid[i][step]
-                col_counts_begin.setdefault(value_begin, []).append((i, step))
+            for i in range(current_row, len(grid)):
+                value = grid[i][current_j_backslash]
+                col_counts_backslash.setdefault(value, []).append((i, current_j_backslash))
 
-            # Traverse from the current row downwards diagonally to the left
-            for i in range(current_row, height):
-                if step >= len(grid[i]):
-                    break
-                value_end = grid[i][len(grid[i]) - 1 - step]
-                col_counts_end.setdefault(value_end, []).append((i, len(grid[i]) - 1 - step))
-
-            # Check for duplicates in the beginning and ending diagonals
-            for positions in col_counts_begin.values():
+            for positions in col_counts_slash.values():
                 if len(positions) > 1:
                     return False
 
-            for positions in col_counts_end.values():
+            for positions in col_counts_backslash.values():
                 if len(positions) > 1:
                     return False
-
-            step += 1
 
         # Check for duplicates in horizontal rows
         for row in grid:
@@ -373,27 +364,6 @@ class SolverTriangle:
                 if len(positions) > 1:
                     candidates.update(positions)
 
-        # for current_row in range(0, len(grid), 2):
-        #     col_counts_begin = {}
-        #     col_counts_end = {}
-        #
-        #     for i in range(current_row, len(grid)):
-        #         value_begin = grid[i][step]
-        #         col_counts_begin.setdefault(value_begin, []).append((i, step))
-        #
-        #     for i in range(current_row, len(grid)):
-        #         value_end = grid[i][len(grid[i]) - 1 - step]
-        #         col_counts_end.setdefault(value_end, []).append((i, len(grid[i]) - 1 - step))
-        #
-        #     for positions in col_counts_begin.values():
-        #         if len(positions) > 1:
-        #             candidates.update(positions)
-        #
-        #     for positions in col_counts_end.values():
-        #         if len(positions) > 1:
-        #             candidates.update(positions)
-        #
-        #     step += 1
 
         original_grid = [row[:] for row in grid]
         return backtrack(grid, list(set(candidates)))

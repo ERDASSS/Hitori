@@ -13,7 +13,7 @@ class Mode:
         ...
 
     @staticmethod
-    def validate_row(row: list[int]):
+    def validate_row(row: list[int], max_len = None):
         ...
 
     @staticmethod

@@ -2,6 +2,10 @@ from __future__ import annotations
 
 import curses
 
+from Source.Modes.Modes.classic import Classic
+from Source.Modes.Modes.extended import Extended
+from Source.Modes.Modes.triangle import Triangle
+
 
 class Display:
     @staticmethod
@@ -76,7 +80,7 @@ class Display:
             grid[row][col] = "X"
 
     @staticmethod
-    def display_solutions(screen, grid: list[list[int | str]], solutions: list[list[list[int]]]):
+    def display_solutions(screen, grid: list[list[int | str]], solutions: list[list[list[int]]], mode: Classic | Extended | Triangle):
         """
         Отображает решения головоломки.
         """
@@ -87,13 +91,22 @@ class Display:
             # Очищаем экран от предыдущего решения
             screen.clear()
             screen.addstr(0, 0, "Введенная головоломка:")
-            for row_idx, row in enumerate(grid):
-                screen.addstr(row_idx + 1, 0, " ".join(map(str, row)))
+            if mode.NAME == "Triangle":
+                for row_idx, row in enumerate(grid):
+                    screen.addstr(row_idx + 1, len(grid[-1]) - row_idx + 1, " ".join(map(str, row)))
 
-            screen.addstr(len(grid) + 2, 0, f"Решение {solution_index + 1} из {len(solutions)}:")
+                screen.addstr(len(grid) + 2, 0, f"Решение {solution_index + 1} из {len(solutions)}:")
 
-            for row_idx, row in enumerate(solution):
-                screen.addstr(len(grid) + 3 + row_idx, 0, " ".join(map(str, row)))
+                for row_idx, row in enumerate(solution):
+                    screen.addstr(len(grid) + 3 + row_idx, len(grid[-1]) - row_idx + 1, " ".join(map(str, row)))
+            else:
+                for row_idx, row in enumerate(grid):
+                    screen.addstr(row_idx + 1, 0, " ".join(map(str, row)))
+
+                screen.addstr(len(grid) + 2, 0, f"Решение {solution_index + 1} из {len(solutions)}:")
+
+                for row_idx, row in enumerate(solution):
+                    screen.addstr(len(grid) + 3 + row_idx, 0, " ".join(map(str, row)))
 
             screen.addstr(len(grid) + 3 + len(solution), 0, "Нажмите стрелки для навигации, q для выхода в меню.")
             screen.refresh()

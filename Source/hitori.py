@@ -79,8 +79,11 @@ class HitoriCLI:
                     if HitoriCLI.handle_interactive_mode(screen, mode):
                         continue  # Возвращаемся в меню
                 elif current_row == 1:
+                    if mode.NAME == "Triangle" and Solve.handle_triangle(screen):
+                        continue
+
                     # None, None - заглушки для width и height
-                    if Solve.handle(screen, mode, None, None):
+                    if not mode.NAME == "Triangle" and Solve.handle(screen, mode, None, None):
                         continue  # Возвращаемся в меню
                 elif current_row == 2:
                     return  # Возвращаемся в меню выбора версии
