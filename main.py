@@ -33,8 +33,8 @@ if __name__ == "__main__":
     except ValueError as e:
         print("Некорректный формат доски. Убедитесь, что данные введены в одном из верных форматов.")
         sys.exit(1)
-    except Exception as e:
-        print(e)
+    except BaseException as e:
+        print("Возникла ошибка во время парсинга головоломки. Убедитесь что данные введены корректно.")
         sys.exit(1)
 
     if args.solve or args.file:

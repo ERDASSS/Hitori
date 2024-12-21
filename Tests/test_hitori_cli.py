@@ -5,6 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 from Source.Modes.Modes.classic import Classic
 from Source.Modes.Modes.extended import Extended
+from Source.Modes.Modes.triangle import Triangle
 from Source.hitori import HitoriCLI
 import unittest
 
@@ -68,6 +69,42 @@ class TestHitoriCLI(unittest.TestCase):
             assert "2 3 4" in output
             assert "X 4 X" in output
 
+    def test_solver_output_triangle_5_all(self):
+        with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
+            HitoriCLI.print_solution_by_args([
+                [5],
+                [1, 3],
+                [2, 5, 1],
+                [5, 2, 3, 4],
+                [4, 5, 1, 2, 5],
+            ], Triangle(), True)
+            output = mock_stdout.getvalue()
+            # Первое
+            assert "X" in output
+            assert "1 3" in output
+            assert "X 5 X" in output
+            assert "5 2 3 4" in output
+            assert "4 X 1 2 5" in output
+
+            # Последнее
+            assert "X" in output
+            assert "1 3" in output
+            assert "X 5 X" in output
+            assert "5 2 3 4" in output
+            assert "4 X 1 2 X" in output
+
+    def test_solver_output_triangle_3_all(self):
+        with patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
+            HitoriCLI.print_solution_by_args([
+                    [2],
+                  [3, 1],
+                [1, 3, 1],
+            ], Triangle(), True)
+            output = mock_stdout.getvalue()
+            # Последнее
+            assert "2" in output
+            assert "X 1" in output
+            assert "1 3 X" in output
 
 if __name__ == '__main__':
     unittest.main()
