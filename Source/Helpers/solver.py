@@ -270,12 +270,15 @@ class SolverTriangle:
 
             for i in range(current_row, len(grid)):
                 value = grid[i][current_j_slash]
-                col_counts_slash.setdefault(value, []).append((i, current_j_slash))
+                if value != 'X':
+                    col_counts_slash.setdefault(value, []).append((i, current_j_slash))
                 current_j_slash += 1
 
             for i in range(current_row, len(grid)):
                 value = grid[i][current_j_backslash]
-                col_counts_backslash.setdefault(value, []).append((i, current_j_backslash))
+                if value != 'X':
+                    col_counts_backslash.setdefault(value, []).append((i, current_j_backslash))
+
 
             for positions in col_counts_slash.values():
                 if len(positions) > 1:
