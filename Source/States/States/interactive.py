@@ -1,5 +1,3 @@
-import logging
-
 from Source.Helpers.generator import Generator
 from Source.Helpers.display import Display
 from Source.Helpers.solver import Solver, SolverTriangle
@@ -43,10 +41,12 @@ class Interactive(State):
 
             if Solver.grid_is_valid(grid, mode) and Solver.is_connected(grid):
                 Display.display_grid(screen, grid, cursor_row, cursor_col)
-                screen.addstr(len(grid) + 2, 0, "Поздравляем! Вы решили головоломку!")
+                screen.addstr(len(grid) + 2, 0, "Поздравляем! Вы решили головоломку! Нажмите Q чтобы выйти.")
                 screen.refresh()
-                screen.getch()
-                return True
+                while True:
+                    key = screen.getch()
+                    if key in (ord("q"), ord("Q"), ord("й"), ord("Й")):
+                        return True
 
     @staticmethod
     def handle_triangle(screen, height):
@@ -83,7 +83,9 @@ class Interactive(State):
 
             if SolverTriangle.grid_is_valid(grid) and SolverTriangle.is_connected(grid):
                 Display.display_grid_triangle(screen, grid, cursor_row, cursor_col)
-                screen.addstr(len(grid) + 2, 0, "Поздравляем! Вы решили головоломку!")
+                screen.addstr(len(grid) + 2, 0, "Поздравляем! Вы решили головоломку! Нажмите Q чтобы выйти.")
                 screen.refresh()
-                screen.getch()
-                return True
+                while True:
+                    key = screen.getch()
+                    if key in (ord("q"), ord("Q"), ord("й"), ord("Й")):
+                        return True

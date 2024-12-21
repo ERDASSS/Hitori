@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from Source.Modes.Modes.classic import Classic
 from Source.Modes.Modes.extended import Extended
+from Source.Modes.Modes.triangle import Triangle
 from Source.hitori import HitoriCLI
 from Source.Helpers.reader import Reader
 
@@ -23,8 +24,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "-m", "--mode",
-        choices=["Classic", "Extended"],
-        help="Определить режим для решения головоломки (Classic или Extended).",
+        choices=["Classic", "Extended", "Triangle"],
+        help="Определить режим для решения головоломки (Classic, Extended или Triangle).",
     )
     parser.add_argument('-a', '--all', action='store_true', help='Отображать все решения.')
     try:
@@ -41,7 +42,16 @@ if __name__ == "__main__":
             print("Ошибка: режим (-m или --mode) обязателен для решения головоломки.", file=sys.stderr)
             sys.exit(1)
         board = args.solve if args.solve else args.file
-        mode = Classic() if args.mode == "Classic" else Extended()
+        if args.mode == "Classic":
+            mode = Classic()
+        elif args.mode == "Extended":
+            mode = Extended()
+        elif args.mode == "Triangle":
+            mode = Triangle()
+        else:
+            print(f"Некорректные данные: не существует режима {args.mode}")
+            print(f"Возможные режимы: Classic, Extended, Triangle")
+            sys.exit(1)
         try:
             mode.validate_grid(board)
         except ValueError as e:

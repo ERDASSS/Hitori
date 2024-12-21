@@ -11,6 +11,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+
 class Solver:
     @staticmethod
     def grid_is_valid(grid: list[list[int | str]], mode: Classic | Extended) -> bool:
@@ -279,7 +280,6 @@ class SolverTriangle:
                 if value != 'X':
                     col_counts_backslash.setdefault(value, []).append((i, current_j_backslash))
 
-
             for positions in col_counts_slash.values():
                 if len(positions) > 1:
                     return False
@@ -343,7 +343,6 @@ class SolverTriangle:
                 if len(positions) > 1:
                     candidates.update(positions)
 
-
         for current_row in range(0, len(grid)):
             col_counts_slash = {}
             col_counts_backslash = {}
@@ -366,7 +365,6 @@ class SolverTriangle:
             for positions in col_counts_backslash.values():
                 if len(positions) > 1:
                     candidates.update(positions)
-
 
         original_grid = [row[:] for row in grid]
         return backtrack(grid, list(set(candidates)))

@@ -140,18 +140,28 @@ class Reader:
             with open(file_path, "r") as f:
                 board_str = f.read().strip()
 
-                # New logic: Check for space-separated and newline-separated format
-                if "\n" in board_str and not (", " in board_str or ": " in board_str):
+                # Check for triangle board format
+                if "\n" in board_str and all(
+                        len(line.split()) <= idx + 1 for idx, line in enumerate(board_str.splitlines())):
+                    board = [[int(num) for num in line.split()] for line in board_str.splitlines()]
+                    # Validate triangle consistency
+                    for idx, row in enumerate(board):
+                        if len(row) != idx + 1:
+                            raise ValueError(
+                                "Invalid triangle format: each row must have one more element than the previous.")
+                    return board
+                elif "\n" in board_str and not ("," in board_str or ":" in board_str):
+                    # Space-separated rows for rectangular or square grids
                     board = [[int(num) for num in line.split()] for line in board_str.splitlines()]
                 else:
-                    # Fall back to parsing using existing logic
+                    # Fallback to existing parsing logic
                     return Reader.parse_board_by_arg(board_str)
 
+                # Ensure consistency for non-triangle formats
                 len_row = len(board[0])
                 for row in board:
                     if len_row != len(row):
                         raise ValueError("Rows are not of consistent length in the file.")
-
                 return board
         except FileNotFoundError:
             raise ValueError(f"File not found: {file_path}")

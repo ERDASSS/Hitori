@@ -4,6 +4,7 @@ from Source.Modes.Modes.classic import Classic
 from Source.Modes.Modes.extended import Extended
 from Source.Modes.Modes.triangle import Triangle
 from Source.States.States.solve import Solve
+from Source.States.States.solve import SolverTriangle
 from Source.States.States.interactive import Interactive
 from Source.Helpers.solver import Solver
 
@@ -120,26 +121,63 @@ class HitoriCLI:
             HitoriCLI.handle_main_menu(screen, mode)
 
     @staticmethod
-    def print_solution_by_args(bord: list[list[int]], game_mode: Classic | Extended, show_all_solutions: bool):
-        solutions = Solver.solve(bord, game_mode)
+    def print_solution_by_args(bord: list[list[int]], game_mode: Classic | Extended | Triangle, show_all_solutions: bool):
 
-        if len(solutions) == 0:
-            print("Решений для данного поля нету.")
-            return
+        def solve_classic_or_extended(bord: list[list[int]], game_mode: Classic | Extended, show_all_solutions: bool):
+            solutions = Solver.solve(bord, game_mode)
 
-        def _show_solution(_solution: list[list[int | str]]):
-            res = ""
-            for row in _solution:
-                res += " ".join(map(str, row)) + "\n"
-            print(res)
+            if len(solutions) == 0:
+                print("Решений для данного поля нету.")
+                return
 
-        if show_all_solutions:
-            current_solution_index = 1
-            len_solutions = len(solutions)
-            for solution in solutions:
-                print(f"\nРешениe {current_solution_index} из {len_solutions}:\n")
-                _show_solution(solution)
-                current_solution_index += 1
+            def _show_solution(_solution: list[list[int | str]]):
+                res = ""
+                for row in _solution:
+                    res += " ".join(map(str, row)) + "\n"
+                print(res)
+
+            if show_all_solutions:
+                current_solution_index = 1
+                len_solutions = len(solutions)
+                for solution in solutions:
+                    print(f"\nРешениe {current_solution_index} из {len_solutions}:\n")
+                    _show_solution(solution)
+                    current_solution_index += 1
+            else:
+                print("\nОдно из решений:")
+                _show_solution(solutions[0])
+
+        def solve_triangle(bord: list[list[int]], game_mode: Triangle,
+                                      show_all_solutions: bool):
+            solutions = SolverTriangle.solve(bord)
+
+            if len(solutions) == 0:
+                print("Решений для данного поля нету.")
+                return
+
+            def _show_solution(_solution: list[list[int | str]]):
+                max_width = max(len(row) for row in _solution)
+                for row_idx, row in enumerate(_solution):
+                    row_offset = (max_width - len(row))  # Определяем отступ для выравнивания строк треугольника
+                    print(" "*row_offset, end="")
+                    for col_idx, cell in enumerate(row):
+                        print(str(cell) + " ", end="")
+                    print()
+
+            if show_all_solutions:
+                current_solution_index = 1
+                len_solutions = len(solutions)
+                for solution in solutions:
+                    print(f"\nРешениe {current_solution_index} из {len_solutions}:\n")
+                    _show_solution(solution)
+                    current_solution_index += 1
+            else:
+                print("\nОдно из решений:")
+                _show_solution(solutions[0])
+
+        if game_mode.NAME in [ "Classic",  "Extended"]:
+            solve_classic_or_extended(bord, game_mode, show_all_solutions)
+        elif game_mode.NAME == "Triangle":
+            solve_triangle(bord, game_mode, show_all_solutions)
         else:
-            print("\nОдно из решений:")
-            _show_solution(solutions[0])
+            raise ValueError(f"Неизвестный режим для отображения решений: {game_mode.NAME}")
