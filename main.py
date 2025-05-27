@@ -1,159 +1,63 @@
-import logging
+from __future__ import annotations
+
+from Source.Modes.Modes.classic import Classic
+from Source.Modes.Modes.extended import Extended
+from Source.Modes.Modes.triangle import Triangle
+from Source.hitori import HitoriCLI
+from Source.Helpers.reader import Reader
+
+import argparse
 import curses
-from interactive_mode import InteractiveMode
-from solve_mode import SolveMode
-
-logging.basicConfig(
-    filename="debug.log",
-    level=logging.DEBUG,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
-
-
-def print_menu(stdscr, menu, current_row):
-    """Функция для отображения меню."""
-    stdscr.clear()
-    for idx, item in enumerate(menu):
-        if idx == current_row:
-            stdscr.attron(curses.A_REVERSE)
-            stdscr.addstr(idx, 0, item)
-            stdscr.attroff(curses.A_REVERSE)
-        else:
-            stdscr.addstr(idx, 0, item)
-    stdscr.refresh()
-
-def handle_mode_selection(stdscr):
-    """Функция для обработки выбора версии игры."""
-    mode_menu = ["Hitori Classic", "Hitori Extended", "Выход"]
-    current_row = 0
-    is_extended = False
-
-    while True:
-        print_menu(stdscr, mode_menu, current_row)
-        key = stdscr.getch()
-
-        if key == curses.KEY_UP and current_row > 0:
-            current_row -= 1
-        elif key == curses.KEY_DOWN and current_row < len(mode_menu) - 1:
-            current_row += 1
-        elif key in (10, 13):  # Enter
-            if current_row == 0:
-                is_extended = False
-                break
-            elif current_row == 1:
-                is_extended = True
-                break
-            elif current_row == 2:
-                return None  # Выход из программы
-
-    return is_extended
-
-def handle_main_menu(stdscr, is_extended):
-    """Функция для обработки основного меню."""
-    main_menu = ["Интерактивный режим", "Решить головоломку", "Назад"]
-    current_row = 0
-
-    while True:
-        print_menu(stdscr, main_menu, current_row)
-        key = stdscr.getch()
-
-        if key == curses.KEY_UP and current_row > 0:
-            current_row -= 1
-        elif key == curses.KEY_DOWN and current_row < len(main_menu) - 1:
-            current_row += 1
-        elif key in (10, 13):  # Enter
-            if current_row == 0:
-                if handle_interactive_mode(stdscr, is_extended):
-                    continue  # Возвращаемся в меню
-            elif current_row == 1:
-                if SolveMode.solve_mode(stdscr, is_extended):
-                    continue  # Возвращаемся в меню
-            elif current_row == 2:
-                return  # Возвращаемся в меню выбора версии
-
-def handle_interactive_mode(stdscr, is_extended):
-    """Функция для обработки интерактивного режима."""
-    stdscr.clear()
-    if is_extended:
-        stdscr.addstr(0, 0, "Введите ширину поля: ")
-        stdscr.refresh()
-
-        width_input = get_user_input(stdscr, 0, "Введите ширину поля: ")
-        if width_input is None:
-            return False
-
-        stdscr.addstr(1, 0, "Введите высоту поля: ")
-        stdscr.refresh()
-
-        height_input = get_user_input(stdscr, 1, "Введите высоту поля: ")
-        if height_input is None:
-            return False
-
-        try:
-            width = int(width_input)
-            height = int(height_input)
-            if width < 3 or height < 3 or width * height > 25 or height >= 10 or width >= 10:
-                raise ValueError("Ширина и высота должны быть > 2 и < 10 и площадь не должна превышать 25")
-        except ValueError as e:
-            stdscr.addstr(2, 0, f"Ошибка: {str(e)}")
-            stdscr.refresh()
-            stdscr.getch()
-            return False
-
-        if InteractiveMode.do_interactive_mode(stdscr, is_extended, height, width):
-            return True
-    else:
-        stdscr.addstr(0, 0, "Введите размер поля [3;5]: ")
-        stdscr.refresh()
-
-        size_input = get_user_input(stdscr, 0, "Введите размер поля [3;5]: ")
-        if size_input is None:
-            return False
-
-        try:
-            size = int(size_input)
-            if size < 3 or size > 5:
-                raise ValueError("Размер поля должен быть в пределах [3;5]")
-        except ValueError as e:
-            stdscr.addstr(1, 0, f"Ошибка: {str(e)}")
-            stdscr.refresh()
-            stdscr.getch()
-            return False
-
-        if InteractiveMode.do_interactive_mode(stdscr, is_extended, size, size):
-            return True
-
-def get_user_input(stdscr, row, prompt):
-    """Функция для получения ввода пользователя."""
-    stdscr.addstr(row, 0, prompt)
-    stdscr.refresh()
-
-    user_input = ""
-    while True:
-        key = stdscr.getch()
-        if key in (10, 13):  # Enter
-            break
-        elif key in (8, 127, curses.KEY_BACKSPACE):  # Backspace
-            if user_input:
-                user_input = user_input[:-1]
-                stdscr.addstr(row, len(prompt) + len(user_input), " ")
-                stdscr.refresh()
-        elif 48 <= key <= 57:  # Цифры
-            user_input += chr(key)
-            stdscr.addstr(row, len(prompt), user_input)
-            stdscr.refresh()
-
-    return user_input
-
-def main(stdscr):
-    curses.curs_set(0)
-
-    while True:
-        is_extended = handle_mode_selection(stdscr)
-        if is_extended is None:
-            break
-
-        handle_main_menu(stdscr, is_extended)
+import sys
 
 if __name__ == "__main__":
-    curses.wrapper(main)
+    parser = argparse.ArgumentParser(description="Play or solve a Hitori puzzle.")
+    parser.add_argument(
+        "-s", "--solve",
+        type=Reader.parse_board_by_arg,
+        help="Решить головоломку. Введите поле в следующем формате: '[a, b, ... ];[ ... ]; ... ;[ ... ]'.",
+    )
+    parser.add_argument(
+        "-f", "--file",
+        type=Reader.parse_board_from_file,
+        help="Solve a puzzle from a file. Provide the path to a text file containing the board.",
+    )
+    parser.add_argument(
+        "-m", "--mode",
+        choices=["Classic", "Extended", "Triangle"],
+        help="Определить режим для решения головоломки (Classic, Extended или Triangle).",
+    )
+    parser.add_argument('-a', '--all', action='store_true', help='Отображать все решения.')
+    try:
+        args = parser.parse_args()
+    except ValueError as e:
+        print("Некорректный формат доски. Убедитесь, что данные введены в одном из верных форматов.")
+        sys.exit(1)
+    except BaseException as e:
+        print("Возникла ошибка во время парсинга головоломки. Убедитесь что данные введены корректно.")
+        sys.exit(1)
+
+    if args.solve or args.file:
+        if not args.mode:
+            print("Ошибка: режим (-m или --mode) обязателен для решения головоломки.", file=sys.stderr)
+            sys.exit(1)
+        board = args.solve if args.solve else args.file
+        if args.mode == "Classic":
+            mode = Classic()
+        elif args.mode == "Extended":
+            mode = Extended()
+        elif args.mode == "Triangle":
+            mode = Triangle()
+        else:
+            print(f"Некорректные данные: не существует режима {args.mode}")
+            print(f"Возможные режимы: Classic, Extended, Triangle")
+            sys.exit(1)
+        try:
+            mode.validate_grid(board)
+        except ValueError as e:
+            print("Некорректные данные: ", e)
+            print("Пожалуйста, проверте соответсвие вводимх данных одному из форматов и введёный режим игры")
+            sys.exit(1)
+        HitoriCLI.print_solution_by_args(board, mode, args.all)
+    else:
+        curses.wrapper(HitoriCLI.run)

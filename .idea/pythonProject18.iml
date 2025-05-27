@@ -4,11 +4,11 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Python 3.12" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="PackageRequirementsSettings">
-    <option name="requirementsPath" value="C:\Users\com12\PycharmProjects\Hitori\main.py" />
+    <option name="requirementsPath" value="C:\Users\com12\PycharmProjects\Hitori\requirements.txt" />
     <option name="removeUnused" value="true" />
   </component>
 </module>
